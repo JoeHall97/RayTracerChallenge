@@ -1,13 +1,15 @@
-#include "iostream"
-#include "tuple.h"
+#include "canvas.h"
+#include "coord_tuple.h"
+#include <fstream>
+#include <iostream>
 #include <thread>
 
 class Projectile
 {
   public:
-    Tuple pointPosition;
-    Tuple vecVelocity;
-    Projectile(Tuple pos, Tuple vel) : pointPosition{pos}, vecVelocity{vel}
+    CoordTuple pointPosition;
+    CoordTuple vecVelocity;
+    Projectile(CoordTuple pos, CoordTuple vel) : pointPosition{pos}, vecVelocity{vel}
     {
     }
 };
@@ -15,9 +17,9 @@ class Projectile
 class Environment
 {
   public:
-    Tuple vecGravity;
-    Tuple vecWind;
-    Environment(Tuple grav, Tuple wind) : vecGravity{grav}, vecWind{wind}
+    CoordTuple vecGravity;
+    CoordTuple vecWind;
+    Environment(CoordTuple grav, CoordTuple wind) : vecGravity{grav}, vecWind{wind}
     {
     }
 };
@@ -33,14 +35,21 @@ void tick(const Environment &env, Projectile &proj)
 int main()
 {
     std::cout << "Hello" << '\n';
-    Projectile proj{point(0, 1, 0), vector(1, 1, 0).normarilise()};
+    Projectile proj{point(0, 1, 0), vector(1, 1.8, 0).normarilise() * 10.8};
     Environment env{vector(0, -0.1, 0), vector(-0.01, 0, 0)};
+    Canvas c{900, 500};
+    ColourTuple red{1, 0, 0};
 
     while (proj.pointPosition.y > 0.000001)
     {
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
-        std::cout << proj.pointPosition << '\n';
+        c.writePixel(proj.pointPosition.x, c.height - proj.pointPosition.y, red);
         tick(env, proj);
     }
-    std::cout << proj.pointPosition << '\n';
+
+    std::ofstream file;
+    file.open("test.ppm");
+    file << c.toPPM();
+    file.close();
+
+    return 0;
 }
