@@ -447,4 +447,14 @@ SCENARIO("Multiplying a product by its inverse.") {
       "| 3 | -1 | 7 | 0 |\n"
       "| 7 |  0 | 5 | 4 |\n"
       "| 6 | -2 | 0 | 5 |";
+  GIVEN("the following matrix a:\n" + matrixStringA)
+  AND_GIVEN("the following matrix b:\n" + matrixStringB)
+  AND_GIVEN("c = a * b") {
+    const Matrix a{std::vector<std::vector<float>>{{3, -9, 7, 3}, {3, -8, 2, -9}, {-4, 4, 4, 1}, {-6, 5, -1, 1}}};
+    const Matrix b{std::vector<std::vector<float>>{{8, 2, 2, 2}, {3, -1, 7, 0}, {7, 0, 5, 4}, {6, -2, 0, 5}}};
+    const auto c = a * b;
+    THEN("c * b.inverse() = a") {
+      REQUIRE(c * b.inverse() == a);
+    }
+  }
 }
