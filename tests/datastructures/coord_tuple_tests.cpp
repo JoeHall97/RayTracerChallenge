@@ -1,7 +1,8 @@
-#include "helpers.h"
-#include "coord_tuple.h"
 #include <catch2/catch_test_macros.hpp>
 #include <cmath>
+
+#include "coord_tuple.hpp"
+#include "helpers.h"
 
 SCENARIO("A tuple with w=1.0 is a point.") {
   GIVEN("a = tuple(4.3, -4.2, 3.1, 1)") {
@@ -204,7 +205,7 @@ SCENARIO("Normalizing a vector(4, 0, 0) give (1, 0, 0)") {
   GIVEN("v = vector(4, 0, 0)") {
     auto v = vector(4, 0, 0);
     THEN("normalize(v) = vector(1, 0, 0)") {
-      REQUIRE(v.normarilise() == vector(1, 0, 0));
+      REQUIRE(v.normalise() == vector(1, 0, 0));
     }
   }
 }
@@ -213,7 +214,7 @@ SCENARIO("Normalizing a vector(1, 2, 3)") {
   GIVEN("v = vector(1, 2, 3)") {
     auto v = vector(1, 2, 3);
     THEN("normalize(v) ~= vector(0.267261, 0.534522, 0.801784)") {
-      REQUIRE(v.normarilise() == vector(0.267261, 0.534522, 0.801784));
+      REQUIRE(v.normalise() == vector(0.267261, 0.534522, 0.801784));
     }
   }
 }

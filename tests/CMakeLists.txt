@@ -6,12 +6,13 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(Catch2)
 
-add_executable(datastructure_unit_tests
+add_executable(datastructure_tests
 	"datastructures/coord_tuple_tests.cpp"
 	"datastructures/colour_tuple_tests.cpp"
 	"datastructures/canvas_tests.cpp"
+	"datastructures/matrix_tests.cpp"
 )
-target_link_libraries(datastructure_unit_tests PRIVATE
+target_link_libraries(datastructure_tests PRIVATE
 	rc::helpers 
 	datastructs 
 	Catch2::Catch2WithMain
@@ -19,4 +20,4 @@ target_link_libraries(datastructure_unit_tests PRIVATE
 
 list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)
 include(Catch)
-catch_discover_tests(datastructure_unit_tests)
+catch_discover_tests(datastructure_tests)
