@@ -1,4 +1,5 @@
 #include <catch2/catch_test_macros.hpp>
+#include <numbers>
 #include <string>
 #include <vector>
 
@@ -450,11 +451,230 @@ SCENARIO("Multiplying a product by its inverse.") {
   GIVEN("the following matrix a:\n" + matrixStringA)
   AND_GIVEN("the following matrix b:\n" + matrixStringB)
   AND_GIVEN("c = a * b") {
-    const Matrix a{std::vector<std::vector<float>>{{3, -9, 7, 3}, {3, -8, 2, -9}, {-4, 4, 4, 1}, {-6, 5, -1, 1}}};
-    const Matrix b{std::vector<std::vector<float>>{{8, 2, 2, 2}, {3, -1, 7, 0}, {7, 0, 5, 4}, {6, -2, 0, 5}}};
+    const Matrix a{std::vector<std::vector<float>>{
+        {3, -9, 7, 3}, {3, -8, 2, -9}, {-4, 4, 4, 1}, {-6, 5, -1, 1}}};
+    const Matrix b{std::vector<std::vector<float>>{
+        {8, 2, 2, 2}, {3, -1, 7, 0}, {7, 0, 5, 4}, {6, -2, 0, 5}}};
     const auto c = a * b;
-    THEN("c * b.inverse() = a") {
-      REQUIRE(c * b.inverse() == a);
+    THEN("c * b.inverse() = a") { REQUIRE(c * b.inverse() == a); }
+  }
+}
+
+SCENARIO("Multiplying by a translation matrix.") {
+  GIVEN("transform = translation(5, -3, 2)")
+  AND_GIVEN("p = point(-3, 4, 5)") {
+    const auto transform = translationMatrix(5, -3, 2);
+    const auto p = point(-3, 4, 5);
+    THEN("transform * p = point(2, 1, 7)") {
+      REQUIRE(transform * p == point(2, 1, 7));
+    }
+  }
+}
+
+SCENARIO("Multiplying by the inverse of a translation matrix.") {
+  GIVEN("transform = translation(5, -3, 2)")
+  AND_GIVEN("inv = transfrom.inverse()")
+  AND_GIVEN("p = point(-3, 4, 5)") {
+    const auto inv = translationMatrix(5, -3, 2).inverse();
+    const auto p = point(-3, 4, 5);
+    THEN("inv * p = point(-8, 7, 3)") { REQUIRE(inv * p == point(-8, 7, 3)); }
+  }
+}
+
+SCENARIO("Translation does not affect vectors.") {
+  GIVEN("transform = translation(5, -3, 2)")
+  AND_GIVEN("v = vector(-3, 4, 5)") {
+    const auto transform = translationMatrix(5, -3, 2);
+    const auto v = vector(-3, 4, 5);
+    THEN("trasnform * v = v") { REQUIRE(transform * v == v); }
+  }
+}
+
+SCENARIO("A scaling matrix applied to a point.") {
+  GIVEN("transform = scaling(2, 3, 4)")
+  AND_GIVEN("p = point(-4, 6, 8)") {
+    const auto transform = scalingMatrix(2, 3, 4);
+    const auto p = point(-4, 6, 8);
+    THEN("transform * p = point(-8, 18, 32)") {
+      REQUIRE(transform * p == point(-8, 18, 32));
+    }
+  }
+}
+
+SCENARIO("A scaling matrix applied to a vector.") {
+  GIVEN("transform = scaling(2, 3, 4)")
+  AND_GIVEN("v = vector(-4, 6, 8)") {
+    const auto transform = scalingMatrix(2, 3, 4);
+    const auto v = vector(-4, 6, 8);
+    THEN("transform * v = vector(-8, 18, 32)") {
+      REQUIRE(transform * v == vector(-8, 18, 32));
+    }
+  }
+}
+
+SCENARIO("Multiplying by the inverse of a scaling matrix.") {
+  GIVEN("transform = scaling(2, 3, 4)")
+  AND_GIVEN("inv = transform.inverse()")
+  AND_GIVEN("v = vector(-4, 6, 8)") {
+    const auto transform = scalingMatrix(2, 3, 4);
+    const auto inv = transform.inverse();
+    const auto v = vector(-4, 6, 8);
+    THEN("inv * v = vector(-2, 2, 2)") { REQUIRE(inv * v == vector(-2, 2, 2)); }
+  }
+}
+
+SCENARIO("Relfection is scaling by a negative value.") {
+  GIVEN("transform = scaling(-1, 1, 1)")
+  AND_GIVEN("p = point(-4, 6, 8)") {
+    const auto transform = scalingMatrix(-1, 1, 1);
+    const auto p = point(-4, 6, 8);
+    THEN("transform * p = point(4, 6, 8)") {
+      REQUIRE(transform * p == point(4, 6, 8));
+    }
+  }
+}
+
+SCENARIO("Rotating a point around the x axis.") {
+  GIVEN("p = point(0, 1, 0)")
+  AND_GIVEN("half_quarter = rotation_x(pi/4)")
+  AND_GIVEN("full_quarter = rotation_x(pi/2)") {
+    const auto p = point(0, 1, 0);
+    const auto halfQuarter = rotationMatrixX(std::numbers::pi / 4);
+    const auto fullQuarter = rotationMatrixX(std::numbers::pi / 2);
+
+    THEN("half_quarter * p = point(0, sqrt(2)/2, sqrt(2)/2)")
+    AND_THEN("full_quarter * p = point(0, 0, 1)") {
+      REQUIRE(halfQuarter * p == point(0, sqrt(2) / 2, sqrt(2) / 2));
+      REQUIRE(fullQuarter * p == point(0, 0, 1));
+    }
+  }
+}
+
+SCENARIO("The inverse of an x-rotation rotates in the opposite dirrection.") {
+  GIVEN("p = point(0, 1, 0)")
+  AND_GIVEN("half_quarter = rotation_x(pi/4)")
+  AND_GIVEN("inv = half_quarter.inverse()") {
+    const auto p = point(0, 1, 0);
+    const auto half_quarter = rotationMatrixX(std::numbers::pi / 4);
+    const auto inv = half_quarter.inverse();
+    THEN("inv * p = point(0, sqrt(2)/2, sqrt(2)/2)") {
+      REQUIRE(inv * p == point(0, sqrt(2) / 2, -sqrt(2) / 2));
+    }
+  }
+}
+
+SCENARIO("Rotating a point around the y axis.") {
+  GIVEN("p = point(0, 0, 1)")
+  AND_GIVEN("half_quarter = rotation_y(pi/4)")
+  AND_GIVEN("full_quarter = rotation_y(pi/2)") {
+    const auto p = point(0, 0, 1);
+    const auto halfQuarter = rotationMatrixY(std::numbers::pi / 4);
+    const auto fullQuarter = rotationMatrixY(std::numbers::pi / 2);
+
+    THEN("half_quarter * p = point(sqrt(2)/2, 0, sqrt(2)/2)")
+    AND_THEN("full_quarter * p = point(1, 0, 0)") {
+      REQUIRE(halfQuarter * p == point(sqrt(2) / 2, 0, sqrt(2) / 2));
+      REQUIRE(fullQuarter * p == point(1, 0, 0));
+    }
+  }
+}
+
+SCENARIO("Rotating a point around the z axis.") {
+  GIVEN("p = point(0, 1, 0)")
+  AND_GIVEN("half_quarter = rotation_z(pi/4)")
+  AND_GIVEN("full_quarter = rotation_z(pi/2)") {
+    const auto p = point(0, 1, 0);
+    const auto halfQuarter = rotationMatrixZ(std::numbers::pi / 4);
+    const auto fullQuarter = rotationMatrixZ(std::numbers::pi / 2);
+
+    THEN("half_quarter * p = point(-sqrt(2)/2, sqrt(2)/2, 0)")
+    AND_THEN("full_quarter * p = point(-1, 0, 0)") {
+      REQUIRE(halfQuarter * p == point(-sqrt(2) / 2, sqrt(2) / 2, 0));
+      REQUIRE(fullQuarter * p == point(-1, 0, 0));
+    }
+  }
+}
+
+SCENARIO("A shearing transformation moves x in proportion to y.") {
+  GIVEN("transform = shearing(1, 0, 0, 0, 0, 0)")
+  AND_GIVEN("p = point(2, 3, 4)") {
+    const auto transform = shearingMatrix(1, 0, 0, 0, 0, 0);
+    const auto p = point(2, 3, 4);
+    THEN("transform * p = point(5, 3, 4)") {
+      REQUIRE(transform * p == point(5, 3, 4));
+    }
+  }
+}
+
+SCENARIO("A shearing transformation moves x in proportion to z.") {
+  GIVEN("transform = shearing(0, 1, 0, 0, 0, 0)")
+  AND_GIVEN("p = point(2, 3, 4)") {
+    const auto transform = shearingMatrix(0, 1, 0, 0, 0, 0);
+    const auto p = point(2, 3, 4);
+    THEN("transform * p = point(6, 3, 4)") {
+      REQUIRE(transform * p == point(6, 3, 4));
+    }
+  }
+}
+
+SCENARIO("A shearing transformation moves y in proportion to x.") {
+  GIVEN("transform = shearing(0, 0, 1, 0, 0, 0)")
+  AND_GIVEN("p = point(2, 3, 4)") {
+    const auto transform = shearingMatrix(0, 0, 1, 0, 0, 0);
+    const auto p = point(2, 3, 4);
+    THEN("transform * p = point(2, 5, 4)") {
+      REQUIRE(transform * p == point(2, 5, 4));
+    }
+  }
+}
+
+SCENARIO("A shearing transformation moves y in proportion to z.") {
+  GIVEN("transform = shearing(0, 0, 0, 1, 0, 0)")
+  AND_GIVEN("p = point(2, 3, 4)") {
+    const auto transform = shearingMatrix(0, 0, 0, 1, 0, 0);
+    const auto p = point(2, 3, 4);
+    THEN("transform * p = point(2, 7, 4)") {
+      REQUIRE(transform * p == point(2, 7, 4));
+    }
+  }
+}
+
+SCENARIO("A shearing transformation moves z in proportion to x.") {
+  GIVEN("transform = shearing(0, 0, 0, 0, 1, 0)")
+  AND_GIVEN("p = point(2, 3, 4)") {
+    const auto transform = shearingMatrix(0, 0, 0, 0, 1, 0);
+    const auto p = point(2, 3, 4);
+    THEN("transform * p = point(2, 3, 6)") {
+      REQUIRE(transform * p == point(2, 3, 6));
+    }
+  }
+}
+
+SCENARIO("A shearing transformation moves z in proportion to y.") {
+  GIVEN("transform = shearing(0, 0, 0, 0, 0, 1)")
+  AND_GIVEN("p = point(2, 3, 4)") {
+    const auto transform = shearingMatrix(0, 0, 0, 0, 0, 1);
+    const auto p = point(2, 3, 4);
+    THEN("transform * p = point(2, 3, 7)") {
+      REQUIRE(transform * p == point(2, 3, 7));
+    }
+  }
+}
+
+SCENARIO("Chained transformations must be applied in reverse order.") {
+  GIVEN("p = point(1, 0, 1)")
+  AND_GIVEN("A = rotation_x(pi/2)")
+  AND_GIVEN("B = scaling(5, 5, 5)")
+  AND_GIVEN("C = translation(10, 5, 7)") {
+    const auto p = point(1, 0, 1);
+    THEN("T = C * B * A")
+    AND_THEN("T * p = point(15, 0, 7)") {
+      const auto T = identity(4).translate(10, 5, 7).scale(5, 5, 5).rotateX(
+          std::numbers::pi / 2);
+      const auto test = translationMatrix(10, 5, 7) * scalingMatrix(5, 5, 5) *
+                        rotationMatrixX(std::numbers::pi / 2);
+      CHECK(test * p == point(15, 0, 7));
+      REQUIRE(T * p == point(15, 0, 7));
     }
   }
 }

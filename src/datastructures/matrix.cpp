@@ -21,6 +21,23 @@ inline float calcMatrixMultiply(const Matrix &a, const Matrix &b,
   return res;
 }
 
+/// @brief Multiplies the two matrices, returning the result as a 2d vector.
+/// @param lhs The left hand side matrix.
+/// @param rhs The right hand side matrix.
+inline std::vector<std::vector<float>> multiplyMatricesInPlace(
+    const Matrix &lhs, const Matrix &rhs) {
+  auto res = std::vector(lhs.size, std::vector<float>(lhs.size));
+  if (lhs.size != rhs.size) return res;
+
+  for (size_t y = 0; y < lhs.size; ++y) {
+    for (size_t x = 0; x < lhs.size; ++x) {
+      res[y][x] = calcMatrixMultiply(lhs, rhs, y, x);
+    }
+  }
+
+  return res;
+}
+
 bool Matrix::operator==(const Matrix &rhs) const {
   if (size != rhs.size) return false;
 
@@ -134,6 +151,31 @@ Matrix Matrix::inverse() const {
   }
 
   return res;
+}
+
+Matrix &Matrix::rotateX(const float r) {
+  matrix = multiplyMatricesInPlace(*this, rotationMatrixX(r));
+  return *this;
+}
+
+Matrix &Matrix::rotateY(const float r) {
+  matrix = multiplyMatricesInPlace(*this, rotationMatrixY(r));
+  return *this;
+}
+
+Matrix &Matrix::rotateZ(const float r) {
+  matrix = multiplyMatricesInPlace(*this, rotationMatrixZ(r));
+  return *this;
+}
+
+Matrix &Matrix::scale(const float x, const float y, const float z) {
+  matrix = multiplyMatricesInPlace(*this, scalingMatrix(x, y, z));
+  return *this;
+}
+
+Matrix &Matrix::translate(const float x, const float y, const float z) {
+  matrix = multiplyMatricesInPlace(*this, translationMatrix(x, y, z));
+  return *this;
 }
 
 std::ostream &operator<<(std::ostream &os, const Matrix &m) {
