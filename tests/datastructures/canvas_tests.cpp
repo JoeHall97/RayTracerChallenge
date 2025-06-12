@@ -6,6 +6,8 @@
 #include "canvas.hpp"
 #include "colour_tuple.hpp"
 
+using rtc::Canvas, rtc::ColourTuple;
+
 SCENARIO("Creating a canvas.") {
   GIVEN("c = canvas(10, 20)") {
     auto c = Canvas{10, 20};

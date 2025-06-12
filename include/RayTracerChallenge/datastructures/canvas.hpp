@@ -1,6 +1,9 @@
 #pragma once
+#include <vector>
+
 #include "colour_tuple.hpp"
 
+namespace rtc {
 class Canvas {
  public:
   std::vector<std::vector<ColourTuple>> canvas;
@@ -27,3 +30,4 @@ class Canvas {
   /// @return
   std::string toPPM() const;
 };
+}

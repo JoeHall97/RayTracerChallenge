@@ -4,11 +4,13 @@
 #include <cmath>
 #include <ostream>
 
-#include "helpers.h"
+#include "helpers.hpp"
+
+using rtc::CoordTuple;
 
 bool CoordTuple::operator==(const CoordTuple &rhs) const {
-  return w == rhs.w && areFloatsEqual(x, rhs.x) && areFloatsEqual(y, rhs.y) &&
-         areFloatsEqual(z, rhs.z);
+  return w == rhs.w && rtc::areFloatsEqual(x, rhs.x) && rtc::areFloatsEqual(y, rhs.y) &&
+         rtc::areFloatsEqual(z, rhs.z);
 }
 
 CoordTuple CoordTuple::operator+(const CoordTuple &rhs) const {

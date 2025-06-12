@@ -3,7 +3,9 @@
 #include <cstddef>
 #include <ostream>
 
-#include "helpers.h"
+#include "helpers.hpp"
+
+using rtc::Matrix;
 
 /// @brief Calculates the multiplication of a and b, for the given row and
 /// column.
@@ -12,7 +14,7 @@
 /// @param row The row of matrix a to use when multiplying.
 /// @param column The column of matrix b to use when multiplying.
 /// @returns The value of the multiplied matrices.
-inline float calcMatrixMultiply(const Matrix &a, const Matrix &b,
+inline static float calcMatrixMultiply(const Matrix &a, const Matrix &b,
                                 const size_t row, const size_t column) {
   float res = 0;
   for (size_t i = 0; i < a.size; ++i) {
@@ -24,7 +26,7 @@ inline float calcMatrixMultiply(const Matrix &a, const Matrix &b,
 /// @brief Multiplies the two matrices, returning the result as a 2d vector.
 /// @param lhs The left hand side matrix.
 /// @param rhs The right hand side matrix.
-inline std::vector<std::vector<float>> multiplyMatricesInPlace(
+inline static std::vector<std::vector<float>> multiplyMatricesInPlace(
     const Matrix &lhs, const Matrix &rhs) {
   auto res = std::vector(lhs.size, std::vector<float>(lhs.size));
   if (lhs.size != rhs.size) return res;
@@ -43,7 +45,7 @@ bool Matrix::operator==(const Matrix &rhs) const {
 
   for (size_t y = 0; y < size; ++y) {
     for (size_t x = 0; x < size; ++x) {
-      if (!areFloatsEqual(at(x, y), rhs.at(x, y))) {
+      if (!rtc::areFloatsEqual(at(x, y), rhs.at(x, y))) {
         return false;
       }
     }
@@ -66,17 +68,17 @@ Matrix Matrix::operator*(const Matrix &rhs) const {
   return res;
 }
 
-CoordTuple Matrix::operator*(const CoordTuple &rhs) const {
-  if (size != 4) return CoordTuple{};
+rtc::CoordTuple Matrix::operator*(const rtc::CoordTuple &rhs) const {
+  if (size != 4) return rtc::CoordTuple{};
 
-  return CoordTuple{rhs.x * matrix[0][0] + rhs.y * matrix[0][1] +
-                        rhs.z * matrix[0][2] + rhs.w * matrix[0][3],
-                    rhs.x * matrix[1][0] + rhs.y * matrix[1][1] +
-                        rhs.z * matrix[1][2] + rhs.w * matrix[1][3],
-                    rhs.x * matrix[2][0] + rhs.y * matrix[2][1] +
-                        rhs.z * matrix[2][2] + rhs.w * matrix[2][3],
-                    rhs.x * matrix[3][0] + rhs.y * matrix[3][1] +
-                        rhs.z * matrix[3][2] + rhs.w * matrix[3][3]};
+  return rtc::CoordTuple{rhs.x * matrix[0][0] + rhs.y * matrix[0][1] +
+                             rhs.z * matrix[0][2] + rhs.w * matrix[0][3],
+                         rhs.x * matrix[1][0] + rhs.y * matrix[1][1] +
+                             rhs.z * matrix[1][2] + rhs.w * matrix[1][3],
+                         rhs.x * matrix[2][0] + rhs.y * matrix[2][1] +
+                             rhs.z * matrix[2][2] + rhs.w * matrix[2][3],
+                         rhs.x * matrix[3][0] + rhs.y * matrix[3][1] +
+                             rhs.z * matrix[3][2] + rhs.w * matrix[3][3]};
 }
 
 float Matrix::determinant() const {

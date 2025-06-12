@@ -33,7 +33,7 @@ inline void checkAndAddNumber(std::stringstream &ss, const float &number,
   charCount += digits;
 }
 
-bool Canvas::writePixel(uint16_t x, uint16_t y, ColourTuple colour) {
+bool rtc::Canvas::writePixel(uint16_t x, uint16_t y, ColourTuple colour) {
   if (x > width || x < 0 || y > height || y < 0) {
     return false;
   }
@@ -41,7 +41,7 @@ bool Canvas::writePixel(uint16_t x, uint16_t y, ColourTuple colour) {
   return true;
 }
 
-std::string Canvas::toPPM() const {
+std::string rtc::Canvas::toPPM() const {
   std::stringstream ss;
   // header
   ss << "P3\n" << width << ' ' << height << "\n255\n";

@@ -13,8 +13,8 @@ add_executable(datastructure_tests
 	"datastructures/matrix_tests.cpp"
 )
 target_link_libraries(datastructure_tests PRIVATE
-	rc::helpers 
-	datastructs 
+	rtc::helpers 
+	rtc::datastructs 
 	Catch2::Catch2WithMain
 )
 

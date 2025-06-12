@@ -3,8 +3,12 @@
 #include <string>
 #include <vector>
 
-#include "helpers.h"
+#include "helpers.hpp"
 #include "matrix.hpp"
+
+using rtc::Matrix, rtc::translationMatrix, rtc::shearingMatrix,
+    rtc::scalingMatrix, rtc::rotationMatrixX, rtc::rotationMatrixY,
+    rtc::rotationMatrixZ, rtc::CoordTuple, rtc::point, rtc::vector;
 
 SCENARIO("Construct a 4x4 matrix.") {
   const std::string matrixString =
@@ -376,9 +380,9 @@ SCENARIO("Calculating the inverse of a matrix") {
     AND_THEN("b is the following 4x4 matrix:\n" + matrixStringB) {
       CHECK(a.determinant() == 532);
       CHECK(a.cofactor(2, 3) == -160);
-      CHECK(areFloatsEqual(b.at(2, 3), -160.0 / 532.0));
+      CHECK(rtc::areFloatsEqual(b.at(2, 3), -160.0 / 532.0));
       CHECK(a.cofactor(3, 2) == 105);
-      CHECK(areFloatsEqual(b.at(3, 2), 105.0 / 532.0));
+      CHECK(rtc::areFloatsEqual(b.at(3, 2), 105.0 / 532.0));
 
       const Matrix expect{std::vector<std::vector<float>>{
           {0.21805, 0.45113, 0.24060, -0.04511},
@@ -669,8 +673,9 @@ SCENARIO("Chained transformations must be applied in reverse order.") {
     const auto p = point(1, 0, 1);
     THEN("T = C * B * A")
     AND_THEN("T * p = point(15, 0, 7)") {
-      const auto T = identity(4).translate(10, 5, 7).scale(5, 5, 5).rotateX(
-          std::numbers::pi / 2);
+      const auto T =
+          rtc::identity(4).translate(10, 5, 7).scale(5, 5, 5).rotateX(
+              std::numbers::pi / 2);
       const auto test = translationMatrix(10, 5, 7) * scalingMatrix(5, 5, 5) *
                         rotationMatrixX(std::numbers::pi / 2);
       CHECK(test * p == point(15, 0, 7));

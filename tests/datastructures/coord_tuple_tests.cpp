@@ -2,7 +2,9 @@
 #include <cmath>
 
 #include "coord_tuple.hpp"
-#include "helpers.h"
+#include "helpers.hpp"
+
+using rtc::CoordTuple, rtc::point, rtc::vector, rtc::areFloatsEqual;
 
 SCENARIO("A tuple with w=1.0 is a point.") {
   GIVEN("a = tuple(4.3, -4.2, 3.1, 1)") {

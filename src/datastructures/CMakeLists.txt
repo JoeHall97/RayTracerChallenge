@@ -22,5 +22,7 @@ target_include_directories(datastructs PUBLIC
 
 target_link_libraries(datastructs
 	PRIVATE
-		rc::helpers
+		rtc::helpers
 )
+
+add_library(rtc::datastructs ALIAS datastructs)

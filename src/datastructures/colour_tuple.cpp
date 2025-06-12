@@ -2,11 +2,13 @@
 
 #include <ostream>
 
-#include "helpers.h"
+#include "helpers.hpp"
+
+using rtc::ColourTuple;
 
 bool ColourTuple::operator==(const ColourTuple &rhs) const {
-  return areFloatsEqual(red, rhs.red) && areFloatsEqual(green, rhs.green) &&
-         areFloatsEqual(blue, rhs.blue);
+  return rtc::areFloatsEqual(red, rhs.red) && rtc::areFloatsEqual(green, rhs.green) &&
+         rtc::areFloatsEqual(blue, rhs.blue);
 }
 
 ColourTuple ColourTuple::operator+(const ColourTuple &rhs) const {
