@@ -3,7 +3,7 @@
 #include <ostream>
 
 namespace rtc {
-class CoordTuple {
+struct CoordTuple {
  public:
   float x, y, z, w;
 
@@ -33,6 +33,6 @@ inline CoordTuple point(const float x, const float y, const float z) {
 inline CoordTuple vector(const float x, const float y, const float z) {
   return CoordTuple{x, y, z, 0};
 }
-} 
+}  // namespace rtc
 
 std::ostream& operator<<(std::ostream& os, const rtc::CoordTuple& t);

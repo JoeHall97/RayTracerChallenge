@@ -2,7 +2,7 @@
 #include <ostream>
 
 namespace rtc {
-class ColourTuple {
+struct ColourTuple {
  public:
   float red, green, blue;
 
@@ -15,6 +15,6 @@ class ColourTuple {
   ColourTuple operator*(const float& value) const;
   ColourTuple operator*(const ColourTuple& rhs) const;
 };
-}
+}  // namespace rtc
 
 std::ostream& operator<<(std::ostream& os, const rtc::ColourTuple& t);

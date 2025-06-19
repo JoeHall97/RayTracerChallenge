@@ -1,6 +1,5 @@
 #include "matrix.hpp"
 
-#include <cstddef>
 #include <ostream>
 
 #include "helpers.hpp"
@@ -83,6 +82,7 @@ rtc::CoordTuple Matrix::operator*(const rtc::CoordTuple &rhs) const {
 
 float Matrix::determinant() const {
   if (size == 2) return at(0, 0) * at(1, 1) - at(1, 0) * at(0, 1);
+  if (size < 2) return 0;
 
   float res = 0;
   for (size_t col = 0; col < size; ++col) {

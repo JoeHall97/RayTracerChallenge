@@ -9,7 +9,7 @@ namespace rtc {
 /// @brief An NxN matrix of floats, where N is the size of the matrix.
 class Matrix {
  public:
-  size_t size{};
+  const size_t size{};
 
   Matrix() = default;
 
@@ -105,6 +105,6 @@ inline Matrix identity(const size_t size) {
   return res;
 }
 
-}
+}  // namespace rtc
 
 std::ostream& operator<<(std::ostream& os, const rtc::Matrix& m);

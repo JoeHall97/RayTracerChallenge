@@ -4,7 +4,7 @@
 #include "colour_tuple.hpp"
 
 namespace rtc {
-class Canvas {
+struct Canvas {
  public:
   std::vector<std::vector<ColourTuple>> canvas;
   uint16_t width, height;
@@ -30,4 +30,4 @@ class Canvas {
   /// @return
   std::string toPPM() const;
 };
-}
+}  // namespace rtc
