@@ -14,7 +14,7 @@ set(DATASTRUCTURE_SOURCES
         colour_tuple.cpp
         canvas.cpp
         matrix.cpp
-        ray.cpp
+        Ray.cpp
         intersection.cpp
 )
 

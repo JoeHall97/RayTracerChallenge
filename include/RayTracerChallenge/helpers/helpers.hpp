@@ -1,5 +1,5 @@
 #pragma once
 
 namespace rtc {
-bool areFloatsEqual(const float a, const float b);
+    bool areFloatsEqual(const float a, const float b);
 }
