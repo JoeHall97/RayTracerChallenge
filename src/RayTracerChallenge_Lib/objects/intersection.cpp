@@ -1,9 +1,7 @@
-#include "intersection.hpp"
-
+#include <RayTracerChallenge/objects/intersection.hpp>
+#include <RayTracerChallenge/objects/sphere.hpp>
 #include <optional>
 #include <ostream>
-
-#include "sphere.hpp"
 
 using rtc::Intersection;
 
@@ -19,8 +17,8 @@ std::optional<Intersection> rtc::hit(const SortedIntersections &intersections) {
 std::ostream &operator<<(std::ostream &os, const Intersection &i) {
     os << '{' << i.t;
     try {
-        dynamic_cast<rtc::Sphere *>(i.object);
-        os << ", rtc::Sphere}";
+        const auto s = dynamic_cast<const rtc::Sphere *>(i.object);
+        os << ", rtc::Sphere, " << s->transform << "}";
     } catch (std::bad_cast &ex) {
         os << ", rtc::Object}";
     }

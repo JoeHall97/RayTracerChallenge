@@ -1,8 +1,7 @@
 #pragma once
 #include <cstdint>
+#include <RayTracerChallenge/datastructures/colour_tuple.hpp>
 #include <vector>
-
-#include "colour_tuple.hpp"
 
 namespace rtc {
     struct Canvas {

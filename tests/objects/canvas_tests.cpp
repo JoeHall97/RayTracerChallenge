@@ -1,10 +1,9 @@
+#include <RayTracerChallenge/datastructures/colour_tuple.hpp>
+#include <RayTracerChallenge/objects/canvas.hpp>
 #include <catch2/catch_test_macros.hpp>
 #include <iterator>
 #include <sstream>
 #include <string>
-
-#include "canvas.hpp"
-#include "colour_tuple.hpp"
 
 using rtc::Canvas, rtc::ColourTuple;
 

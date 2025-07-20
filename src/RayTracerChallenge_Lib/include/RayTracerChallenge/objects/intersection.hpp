@@ -1,18 +1,17 @@
 #pragma once
 
+#include <RayTracerChallenge/helpers/helpers.hpp>
+#include <RayTracerChallenge/objects/object.hpp>
 #include <optional>
 #include <ostream>
 #include <set>
 
-#include "helpers.hpp"
-#include "object.hpp"
-
 namespace rtc {
     struct Intersection {
         float t;
-        Object *object;
+        const Object *object;
 
-        Intersection(const float t, Object *o) : t{t}, object{o} {
+        Intersection(const float t, const Object *o) : t{t}, object{o} {
         }
 
         bool operator==(const Intersection &other) const noexcept {
@@ -21,12 +20,12 @@ namespace rtc {
     };
 
     struct IntersectionCompare {
-        inline bool operator()(const Intersection &lhs, const Intersection &rhs) const {
+        bool operator()(const Intersection &lhs, const Intersection &rhs) const {
             return lhs.t < rhs.t;
         }
     };
 
-    // a sorted set of Intersections by t ascending
+    // sorted set of Intersections by t ascending
     using SortedIntersections = std::set<Intersection, IntersectionCompare>;
 
     std::optional<Intersection> hit(const SortedIntersections &intersections);

@@ -1,10 +1,10 @@
+#include <RayTracerChallenge/datastructures/coord_tuple.hpp>
+#include <RayTracerChallenge/datastructures/matrix.hpp>
+#include <RayTracerChallenge/helpers/helpers.hpp>
 #include <catch2/catch_test_macros.hpp>
 #include <numbers>
 #include <string>
 #include <vector>
-
-#include "helpers.hpp"
-#include "matrix.hpp"
 
 using rtc::Matrix, rtc::translationMatrix, rtc::shearingMatrix, rtc::scalingMatrix, rtc::rotationMatrixX,
         rtc::rotationMatrixY, rtc::rotationMatrixZ, rtc::CoordTuple, rtc::point, rtc::vector;

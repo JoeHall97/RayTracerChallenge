@@ -1,5 +1,5 @@
-#include "canvas.hpp"
-
+#include <RayTracerChallenge/datastructures/colour_tuple.hpp>
+#include <RayTracerChallenge/objects/canvas.hpp>
 #include <cmath>
 #include <cstdint>
 #include <iostream>
@@ -38,7 +38,7 @@ namespace {
 } // namespace
 
 bool rtc::Canvas::writePixel(const std::uint16_t x, const std::uint16_t y, const ColourTuple colour) {
-    if (x > width || x < 0 || y > height || y < 0) {
+    if (x > width || y > height) {
         return false;
     }
     canvas[y][x] = colour;

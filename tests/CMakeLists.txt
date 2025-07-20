@@ -9,17 +9,25 @@ FetchContent_MakeAvailable(Catch2)
 add_executable(datastructure_tests
         "datastructures/coord_tuple_tests.cpp"
         "datastructures/colour_tuple_tests.cpp"
-        "datastructures/canvas_tests.cpp"
         "datastructures/matrix_tests.cpp"
-        "datastructures/ray_tests.cpp"
-        "datastructures/intersection_tests.cpp"
 )
 target_link_libraries(datastructure_tests PRIVATE
-        rtc::helpers
-        rtc::datastructs
+        rtc::lib
+        Catch2::Catch2WithMain
+)
+
+add_executable(object_tests
+        "objects/canvas_tests.cpp"
+        "objects/ray_tests.cpp"
+        "objects/intersection_tests.cpp"
+        "objects/sphere_tests.cpp"
+)
+target_link_libraries(object_tests PRIVATE
+        rtc::lib
         Catch2::Catch2WithMain
 )
 
 list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)
 include(Catch)
 catch_discover_tests(datastructure_tests)
+catch_discover_tests(object_tests)

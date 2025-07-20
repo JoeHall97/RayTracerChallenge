@@ -1,7 +1,6 @@
+#include <RayTracerChallenge/datastructures/colour_tuple.hpp>
+#include <RayTracerChallenge/helpers/helpers.hpp>
 #include <catch2/catch_test_macros.hpp>
-
-#include "colour_tuple.hpp"
-#include "helpers.hpp"
 
 SCENARIO("Colours are (red, green, blue) tuples.") {
     GIVEN("c = colour(-0.5, 0.4, 1.7)") {

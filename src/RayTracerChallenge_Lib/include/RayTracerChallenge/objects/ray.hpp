@@ -1,9 +1,7 @@
 #pragma once
 
-#include <vector>
-#include "coord_tuple.hpp"
-#include "intersection.hpp"
-#include "sphere.hpp"
+#include <RayTracerChallenge/datastructures/coord_tuple.hpp>
+#include <RayTracerChallenge/datastructures/matrix.hpp>
 
 namespace rtc {
     struct Ray {
@@ -19,10 +17,7 @@ namespace rtc {
             return origin + direction * time;
         }
 
-        /// @brief Calculates the intersection(s) with the given sphere.
-        /// @param s The sphere to check for intersection with.
-        /// @returns The intersection(s) with the given sphere.
         [[nodiscard]]
-        std::vector<Intersection> intersect(Sphere &s) const;
+        Ray transform(const Matrix &m) const;
     };
 } // namespace rtc

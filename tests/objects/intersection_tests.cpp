@@ -1,7 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "intersection.hpp"
-#include "sphere.hpp"
+#include <RayTracerChallenge/objects/intersection.hpp>
+#include <RayTracerChallenge/objects/sphere.hpp>
 
 using rtc::sphere, rtc::Intersection, rtc::hit, rtc::SortedIntersections;
 

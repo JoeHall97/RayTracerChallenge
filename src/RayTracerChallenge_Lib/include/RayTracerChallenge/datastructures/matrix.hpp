@@ -2,20 +2,27 @@
 #include <cmath>
 #include <vector>
 
-#include "coord_tuple.hpp"
+#include <RayTracerChallenge/datastructures/coord_tuple.hpp>
 
 namespace rtc {
     /// @brief An NxN matrix of floats, where N is the size of the matrix.
     class Matrix {
     public:
-        const size_t size;
-
-        explicit Matrix(const size_t size) : size{size} {
+        explicit Matrix(const size_t size) {
             matrix_ = std::vector(size, std::vector<float>(size));
         }
 
-        explicit Matrix(std::vector<std::vector<float>> &&matrix) : size{matrix.size()}, matrix_{matrix} {
+        explicit Matrix(std::vector<std::vector<float>> &&matrix) : matrix_{matrix} {
         }
+
+        explicit Matrix(const std::vector<std::vector<float>> &matrix) : matrix_{matrix} {
+        }
+
+        ~Matrix() = default;
+        constexpr Matrix(const Matrix &) = default;
+        constexpr Matrix(Matrix &&) = default;
+        constexpr Matrix &operator=(const Matrix &) = default;
+        constexpr Matrix &operator=(Matrix &&) = default;
 
         bool operator==(const Matrix &rhs) const;
         Matrix operator*(const Matrix &rhs) const;
@@ -50,6 +57,11 @@ namespace rtc {
         [[nodiscard]]
         bool invertible() const {
             return determinant() != 0.0f;
+        }
+
+        [[nodiscard]]
+        size_t size() const {
+            return matrix_.size();
         }
 
     private:

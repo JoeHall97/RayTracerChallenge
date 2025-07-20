@@ -1,14 +1,12 @@
-#include "colour_tuple.hpp"
-
+#include <RayTracerChallenge/datastructures/colour_tuple.hpp>
+#include <RayTracerChallenge/helpers/helpers.hpp>
 #include <ostream>
 
-#include "helpers.hpp"
 
 using rtc::ColourTuple;
 
 bool ColourTuple::operator==(const ColourTuple &rhs) const {
-    return rtc::areFloatsEqual(red, rhs.red) && rtc::areFloatsEqual(green, rhs.green) &&
-           rtc::areFloatsEqual(blue, rhs.blue);
+    return areFloatsEqual(red, rhs.red) && areFloatsEqual(green, rhs.green) && areFloatsEqual(blue, rhs.blue);
 }
 
 ColourTuple ColourTuple::operator+(const ColourTuple &rhs) const {

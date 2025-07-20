@@ -1,8 +1,7 @@
+#include <RayTracerChallenge/datastructures/coord_tuple.hpp>
+#include <RayTracerChallenge/helpers/helpers.hpp>
 #include <catch2/catch_test_macros.hpp>
 #include <cmath>
-
-#include "coord_tuple.hpp"
-#include "helpers.hpp"
 
 using rtc::CoordTuple, rtc::point, rtc::vector, rtc::areFloatsEqual;
 

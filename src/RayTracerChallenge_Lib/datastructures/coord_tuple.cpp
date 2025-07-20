@@ -1,16 +1,14 @@
-#include "coord_tuple.hpp"
-
+#include <RayTracerChallenge/datastructures/coord_tuple.hpp>
+#include <RayTracerChallenge/helpers/helpers.hpp>
 #include <algorithm>
 #include <cmath>
 #include <ostream>
 
-#include "helpers.hpp"
 
 using rtc::CoordTuple;
 
 bool CoordTuple::operator==(const CoordTuple &rhs) const {
-    return w == rhs.w && rtc::areFloatsEqual(x, rhs.x) && rtc::areFloatsEqual(y, rhs.y) &&
-           rtc::areFloatsEqual(z, rhs.z);
+    return w == rhs.w && areFloatsEqual(x, rhs.x) && areFloatsEqual(y, rhs.y) && areFloatsEqual(z, rhs.z);
 }
 
 CoordTuple CoordTuple::operator+(const CoordTuple &rhs) const {
