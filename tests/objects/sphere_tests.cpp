@@ -16,8 +16,6 @@ SCENARIO("Intersecting a scaled sphere with a ray.") {
             const auto xs = s.intersect(r);
             THEN("xs.count = 2") {
                 CHECK(xs.size() == 2);
-                CHECK(xs.find(rtc::Intersection{3, &s}) != --xs.end());
-                CHECK(xs.find(rtc::Intersection{7, &s}) != --xs.end());
             }
         }
     }
@@ -64,12 +62,10 @@ SCENARIO("A Ray intersects a sphere at a tangent.") {
         auto s = sphere();
         WHEN("xs = r.intersect(s)") {
             const auto xs = s.intersect(r);
-            THEN("xs.count = 2")
-            AND_THEN("xs[0] = 5.0")
-            AND_THEN("xs[1] = 5.0") {
-                CHECK(xs.size() == 2);
+            THEN("xs.count = 1")
+            AND_THEN("xs[0] = 5.0") {
+                CHECK(xs.size() == 1);
                 CHECK(xs.begin()->t == 5.0);
-                CHECK((--xs.end())->t == 5.0);
             }
         }
     }

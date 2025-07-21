@@ -45,6 +45,9 @@ target_sources(rtc_lib
         ${OBJECTS_SOURCES} ${DATASTRUCTURES_SOURCES} ${HELPERS_SOURCES}
 )
 
+set_property(TARGET rtc_lib PROPERTY CXX_STANDARD 23)
+set_property(TARGET rtc_lib PROPERTY CXX_STANDARD_REQUIRED ON)
+
 if (MSVC)
     target_compile_options(rtc_lib PRIVATE /Wall)
 else ()

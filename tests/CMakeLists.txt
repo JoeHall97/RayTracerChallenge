@@ -16,6 +16,9 @@ target_link_libraries(datastructure_tests PRIVATE
         Catch2::Catch2WithMain
 )
 
+set_property(TARGET datastructure_tests PROPERTY CXX_STANDARD 23)
+set_property(TARGET datastructure_tests PROPERTY CXX_STANDARD_REQUIRED ON)
+
 add_executable(object_tests
         "objects/canvas_tests.cpp"
         "objects/ray_tests.cpp"
@@ -26,6 +29,9 @@ target_link_libraries(object_tests PRIVATE
         rtc::lib
         Catch2::Catch2WithMain
 )
+
+set_property(TARGET object_tests PROPERTY CXX_STANDARD 23)
+set_property(TARGET object_tests PROPERTY CXX_STANDARD_REQUIRED ON)
 
 list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)
 include(Catch)
