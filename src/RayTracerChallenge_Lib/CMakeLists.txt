@@ -4,6 +4,8 @@ set(OBJECTS_HEADERS
         "include/RayTracerChallenge/objects/intersection.hpp"
         "include/RayTracerChallenge/objects/sphere.hpp"
         "include/RayTracerChallenge/objects/object.hpp"
+        "include/RayTracerChallenge/objects/light.h"
+        "include/RayTracerChallenge/objects/material.h"
 )
 
 set(OBJECTS_SOURCES
@@ -11,6 +13,8 @@ set(OBJECTS_SOURCES
         "objects/ray.cpp"
         "objects/intersection.cpp"
         "objects/sphere.cpp"
+        "objects/light.cpp"
+        "objects/material.cpp"
 )
 
 set(DATASTRUCTURES_HEADERS

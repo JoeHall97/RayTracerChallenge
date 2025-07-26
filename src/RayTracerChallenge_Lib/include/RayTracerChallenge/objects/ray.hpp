@@ -4,20 +4,20 @@
 #include <RayTracerChallenge/datastructures/matrix.hpp>
 
 namespace rtc {
-    struct Ray {
-    public:
-        CoordTuple origin;
-        CoordTuple direction;
+struct Ray {
+public:
+  CoordTuple origin;
+  CoordTuple direction;
 
-        Ray(const CoordTuple origin, const CoordTuple direction) : origin{origin}, direction{direction} {
-        }
+  Ray(const CoordTuple origin, const CoordTuple direction)
+      : origin{origin}, direction{direction} {}
 
-        [[nodiscard]]
-        inline CoordTuple position(const float time) const {
-            return origin + direction * time;
-        }
+  [[nodiscard]]
+  inline CoordTuple position(const float time) const {
+    return origin + direction * time;
+  }
 
-        [[nodiscard]]
-        Ray transform(const Matrix &m) const;
-    };
+  [[nodiscard]]
+  Ray transform(const Matrix &m) const;
+};
 } // namespace rtc

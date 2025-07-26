@@ -24,6 +24,7 @@ add_executable(object_tests
         "objects/ray_tests.cpp"
         "objects/intersection_tests.cpp"
         "objects/sphere_tests.cpp"
+        "objects/material_tests.cpp"
 )
 target_link_libraries(object_tests PRIVATE
         rtc::lib
