@@ -1,13 +1,12 @@
-#include <RayTracerChallenge/datastructures/colour_tuple.hpp>
-#include <RayTracerChallenge/datastructures/coord_tuple.hpp>
 #include <RayTracerChallenge/datastructures/matrix.hpp>
+#include <RayTracerChallenge/datastructures/vec4.hpp>
 #include <RayTracerChallenge/objects/canvas.hpp>
+#include <RayTracerChallenge/objects/colour.hpp>
 #include <RayTracerChallenge/objects/intersection.hpp>
 #include <RayTracerChallenge/objects/ray.hpp>
 #include <RayTracerChallenge/objects/sphere.hpp>
 #include <cstdint>
 #include <fstream>
-#include <iostream>
 
 int main() {
   constexpr std::uint16_t PIXELS = 100;
@@ -16,12 +15,12 @@ int main() {
   constexpr auto PIXEL_SIZE = WALL_SIZE / PIXELS;
   constexpr auto HALF_WALL_SIZE = WALL_SIZE / 2;
 
-  const rtc::ColourTuple green{0, 1, 0};
+  const rtc::Colour green{0, 1, 0};
   const auto rayOrigin = rtc::point(0, 0, -5);
   auto shape = rtc::sphere();
-  shape.material.colour = rtc::ColourTuple{0.3, 0.2, 1};
+  shape.material.colour = rtc::Colour{0.3, 0.2, 1};
   shape.transform = rtc::scalingMatrix(1.3, 0.4, 1);
-  const rtc::Light light{rtc::ColourTuple{1, 1, 1}, rtc::point(-10, 10, -10)};
+  const rtc::Light light{rtc::Colour{1, 1, 1}, rtc::point(-10, 10, -10)};
   rtc::Canvas canvas{PIXELS, PIXELS};
 
   for (auto y = 0; y < PIXELS; ++y) {

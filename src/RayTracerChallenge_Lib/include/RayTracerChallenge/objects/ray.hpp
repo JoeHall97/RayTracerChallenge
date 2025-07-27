@@ -1,19 +1,19 @@
 #pragma once
 
-#include <RayTracerChallenge/datastructures/coord_tuple.hpp>
 #include <RayTracerChallenge/datastructures/matrix.hpp>
+#include <RayTracerChallenge/datastructures/vec4.hpp>
 
 namespace rtc {
 struct Ray {
 public:
-  CoordTuple origin;
-  CoordTuple direction;
+  Vec4 origin;
+  Vec4 direction;
 
-  Ray(const CoordTuple origin, const CoordTuple direction)
+  Ray(const Vec4 origin, const Vec4 direction)
       : origin{origin}, direction{direction} {}
 
   [[nodiscard]]
-  inline CoordTuple position(const float time) const {
+  inline Vec4 position(const float time) const {
     return origin + direction * time;
   }
 

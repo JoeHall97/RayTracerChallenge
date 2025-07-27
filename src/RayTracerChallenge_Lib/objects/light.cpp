@@ -1,1 +1,1 @@
-#include <RayTracerChallenge/objects/light.h>
+#include <RayTracerChallenge/objects/light.hpp>

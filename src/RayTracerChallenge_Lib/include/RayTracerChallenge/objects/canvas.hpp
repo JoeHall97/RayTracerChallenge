@@ -1,22 +1,21 @@
 #pragma once
-#include <RayTracerChallenge/datastructures/colour_tuple.hpp>
+#include <RayTracerChallenge/objects/colour.hpp>
 #include <cstdint>
 #include <vector>
 
 namespace rtc {
 struct Canvas {
 public:
-  std::vector<std::vector<ColourTuple>> canvas;
+  std::vector<std::vector<Colour>> canvas;
   std::uint16_t width, height;
 
   Canvas(const std::uint16_t width, const std::uint16_t height)
       : width{width}, height{height} {
-    canvas = std::vector(height,
-                         std::vector<ColourTuple>(width, ColourTuple{0, 0, 0}));
+    canvas = std::vector(height, std::vector<Colour>(width, Colour{0, 0, 0}));
   }
 
   Canvas(const std::uint16_t width, const std::uint16_t height,
-         const ColourTuple defaultColour)
+         const Colour defaultColour)
       : width{width}, height{height} {
     canvas = std::vector(height, std::vector(width, defaultColour));
   }
@@ -26,7 +25,7 @@ public:
   /// @param y
   /// @param colour
   /// @return true if the colour was added to the canvas, else false
-  bool writePixel(uint16_t x, uint16_t y, ColourTuple colour);
+  bool writePixel(uint16_t x, uint16_t y, Colour colour);
   /// @brief Output the canvas as a .ppm string.
   /// @return
   [[nodiscard]]

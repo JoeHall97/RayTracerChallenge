@@ -1,7 +1,6 @@
-#include <RayTracerChallenge/datastructures/colour_tuple.hpp>
 #include <RayTracerChallenge/objects/canvas.hpp>
+#include <RayTracerChallenge/objects/colour.hpp>
 #include <cmath>
-#include <cstdint>
 #include <iostream>
 #include <sstream>
 
@@ -19,8 +18,8 @@ inline int getDigitCount(const int number) {
 /// @param ss The stream to output the number to.
 /// @param number The number to output.
 /// @param charCount The current number of characters in the current line.
-inline void checkAndAddNumber(std::stringstream &ss, const float &number,
-                              int &charCount) {
+void checkAndAddNumber(std::stringstream &ss, const float &number,
+                       int &charCount) {
   const int num =
       std::max(0, std::min(255, static_cast<int>(std::round(255 * number))));
   const auto digits = getDigitCount(num);
@@ -40,7 +39,7 @@ inline void checkAndAddNumber(std::stringstream &ss, const float &number,
 } // namespace
 
 bool rtc::Canvas::writePixel(const std::uint16_t x, const std::uint16_t y,
-                             const ColourTuple colour) {
+                             const Colour colour) {
   if (x > width || y > height) {
     return false;
   }

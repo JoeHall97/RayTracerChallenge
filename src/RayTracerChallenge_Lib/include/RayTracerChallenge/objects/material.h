@@ -1,15 +1,15 @@
 #pragma once
 
-#include <RayTracerChallenge/datastructures/colour_tuple.hpp>
 #include <RayTracerChallenge/helpers/helpers.hpp>
-#include <RayTracerChallenge/objects/light.h>
+#include <RayTracerChallenge/objects/colour.hpp>
+#include <RayTracerChallenge/objects/light.hpp>
 
 namespace rtc {
 struct Material {
-  ColourTuple colour;
+  Colour colour;
   float ambient, diffuse, specular, shininess;
 
-  Material(const ColourTuple colour, const float ambient, const float diffuse,
+  Material(const Colour colour, const float ambient, const float diffuse,
            const float specular, const float shininess)
       : colour(colour), ambient(ambient), diffuse(diffuse), specular(specular),
         shininess(shininess) {}
@@ -22,13 +22,12 @@ struct Material {
   }
 
   [[nodiscard]]
-  ColourTuple lighting(const Light &light, const CoordTuple &position,
-                       const CoordTuple &eyeVec,
-                       const CoordTuple &normalVec) const noexcept;
+  Colour lighting(const Light &light, const Vec4 &position, const Vec4 &eyeVec,
+                  const Vec4 &normalVec) const noexcept;
 };
 
 [[nodiscard]] inline Material defaultMaterial() noexcept {
-  const ColourTuple defaultColour{1, 1, 1};
+  const Colour defaultColour{1, 1, 1};
   return Material{defaultColour, 0.1, 0.9, 0.9, 200.0};
 }
 

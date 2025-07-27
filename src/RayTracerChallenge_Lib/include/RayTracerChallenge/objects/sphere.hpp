@@ -1,7 +1,7 @@
 #pragma once
 
-#include <RayTracerChallenge/datastructures/coord_tuple.hpp>
 #include <RayTracerChallenge/datastructures/matrix.hpp>
+#include <RayTracerChallenge/datastructures/vec4.hpp>
 #include <RayTracerChallenge/helpers/helpers.hpp>
 #include <RayTracerChallenge/objects/intersection.hpp>
 #include <RayTracerChallenge/objects/material.h>
@@ -12,14 +12,14 @@ namespace rtc {
 struct Sphere final : Object {
   Matrix transform;
   Material material;
-  CoordTuple origin;
+  Vec4 origin;
   float radius;
 
-  Sphere(const CoordTuple origin, const float radius)
+  Sphere(const Vec4 origin, const float radius)
       : transform{identity(4)}, material{defaultMaterial()}, origin{origin},
         radius{radius} {}
 
-  Sphere(const CoordTuple origin, const float radius, const Matrix &transform)
+  Sphere(const Vec4 origin, const float radius, const Matrix &transform)
       : transform{transform}, material{defaultMaterial()}, origin{origin},
         radius{radius} {}
 
@@ -37,7 +37,7 @@ struct Sphere final : Object {
   [[nodiscard]]
   SortedIntersections intersect(const Ray &ray) const noexcept;
   [[nodiscard]]
-  CoordTuple normalAt(const CoordTuple &worldPoint) const noexcept;
+  Vec4 normalAt(const Vec4 &worldPoint) const noexcept;
 };
 
 [[nodiscard]] inline Sphere sphere() noexcept {

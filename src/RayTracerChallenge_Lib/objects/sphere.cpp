@@ -18,7 +18,7 @@ rtc::SortedIntersections rtc::Sphere::intersect(const Ray &ray) const noexcept {
   return SortedIntersections{i1, i2};
 }
 
-rtc::CoordTuple rtc::Sphere::normalAt(const CoordTuple &worldPoint) const noexcept {
+rtc::Vec4 rtc::Sphere::normalAt(const Vec4 &worldPoint) const noexcept {
   const auto objectPoint = transform.inverse() * worldPoint;
   const auto objectNormal = objectPoint - point(0, 0, 0);
   auto worldNormal = transform.inverse().transpose() * objectNormal;

@@ -1,11 +1,11 @@
-#include <RayTracerChallenge/datastructures/colour_tuple.hpp>
 #include <RayTracerChallenge/objects/canvas.hpp>
+#include <RayTracerChallenge/objects/colour.hpp>
 #include <catch2/catch_test_macros.hpp>
 #include <iterator>
 #include <sstream>
 #include <string>
 
-using rtc::Canvas, rtc::ColourTuple;
+using rtc::Canvas, rtc::Colour;
 
 SCENARIO("Creating a canvas.") {
   GIVEN("c = canvas(10, 20)") {
@@ -17,7 +17,7 @@ SCENARIO("Creating a canvas.") {
       CHECK(c.height == 20);
       for (auto &row : c.canvas) {
         for (auto &column : row) {
-          REQUIRE(column == ColourTuple{0, 0, 0});
+          REQUIRE(column == Colour{0, 0, 0});
         }
       }
     }
@@ -28,7 +28,7 @@ SCENARIO("Writing pixels to a canvas.") {
   GIVEN("c = canvas(10, 20)")
   AND_GIVEN("red = colour(1, 0, 0)") {
     auto c = Canvas{10, 20};
-    const auto red = ColourTuple{1, 0, 0};
+    const auto red = Colour{1, 0, 0};
     WHEN("writePixel(c, 2, 4, red)") {
       c.writePixel(2, 4, red);
       THEN("canvas.at(2, 4) = red") { REQUIRE(c.canvas[4][2] == red); }
@@ -72,9 +72,9 @@ SCENARIO("Constructing the PPM pixel data.") {
   AND_GIVEN("c2 = colour(0, 0.5, 0)")
   AND_GIVEN("c2 = colour(0, -0.5, 1)") {
     auto c = Canvas{5, 3};
-    const auto c1 = ColourTuple{1.4f, 0, 0};
-    const auto c2 = ColourTuple{0, 0.5f, 0};
-    const auto c3 = ColourTuple{-0.5f, 0, 1};
+    const auto c1 = Colour{1.4f, 0, 0};
+    const auto c2 = Colour{0, 0.5f, 0};
+    const auto c3 = Colour{-0.5f, 0, 1};
 
     WHEN("write_pixel(c, 0, 0, c1)")
     AND_WHEN("write_pixel(c, 2, 1, c2)")
@@ -114,7 +114,7 @@ SCENARIO("Splitting long lines in PPM files.") {
   GIVEN("c = canvas(10, 2)") {
     WHEN("every pixel of c is set of colour(1, 0.8, 0.6)")
     AND_WHEN("ppm = c.toPPM()") {
-      auto c = Canvas{10, 2, ColourTuple{1, 0.8f, 0.6f}};
+      auto c = Canvas{10, 2, Colour{1, 0.8f, 0.6f}};
       auto ppm = c.toPPM();
 
       THEN("lines 4-7 are the expected values") {

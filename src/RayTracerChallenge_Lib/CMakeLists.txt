@@ -4,8 +4,9 @@ set(OBJECTS_HEADERS
         "include/RayTracerChallenge/objects/intersection.hpp"
         "include/RayTracerChallenge/objects/sphere.hpp"
         "include/RayTracerChallenge/objects/object.hpp"
-        "include/RayTracerChallenge/objects/light.h"
+        "include/RayTracerChallenge/objects/light.hpp"
         "include/RayTracerChallenge/objects/material.h"
+        "include/RayTracerChallenge/objects/colour.hpp"
 )
 
 set(OBJECTS_SOURCES
@@ -15,17 +16,16 @@ set(OBJECTS_SOURCES
         "objects/sphere.cpp"
         "objects/light.cpp"
         "objects/material.cpp"
+        "objects/colour.cpp"
 )
 
 set(DATASTRUCTURES_HEADERS
-        "include/RayTracerChallenge/datastructures/colour_tuple.hpp"
-        "include/RayTracerChallenge/datastructures/coord_tuple.hpp"
+        "include/RayTracerChallenge/datastructures/vec4.hpp"
         "include/RayTracerChallenge/datastructures/matrix.hpp"
 )
 
 set(DATASTRUCTURES_SOURCES
-        "datastructures/colour_tuple.cpp"
-        "datastructures/coord_tuple.cpp"
+        "datastructures/vec4.cpp"
         "datastructures/matrix.cpp"
 )
 

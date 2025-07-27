@@ -1,5 +1,5 @@
-#include <RayTracerChallenge/datastructures/coord_tuple.hpp>
 #include <RayTracerChallenge/datastructures/matrix.hpp>
+#include <RayTracerChallenge/datastructures/vec4.hpp>
 #include <RayTracerChallenge/helpers/helpers.hpp>
 #include <ostream>
 
@@ -72,18 +72,18 @@ Matrix Matrix::operator*(const Matrix &rhs) const {
   return res;
 }
 
-rtc::CoordTuple Matrix::operator*(const rtc::CoordTuple &rhs) const {
+rtc::Vec4 Matrix::operator*(const rtc::Vec4 &rhs) const {
   if (size() != 4)
-    return rtc::CoordTuple{};
+    return rtc::Vec4{};
 
-  return rtc::CoordTuple{rhs.x * matrix_[0][0] + rhs.y * matrix_[0][1] +
-                             rhs.z * matrix_[0][2] + rhs.w * matrix_[0][3],
-                         rhs.x * matrix_[1][0] + rhs.y * matrix_[1][1] +
-                             rhs.z * matrix_[1][2] + rhs.w * matrix_[1][3],
-                         rhs.x * matrix_[2][0] + rhs.y * matrix_[2][1] +
-                             rhs.z * matrix_[2][2] + rhs.w * matrix_[2][3],
-                         rhs.x * matrix_[3][0] + rhs.y * matrix_[3][1] +
-                             rhs.z * matrix_[3][2] + rhs.w * matrix_[3][3]};
+  return rtc::Vec4{rhs.x * matrix_[0][0] + rhs.y * matrix_[0][1] +
+                       rhs.z * matrix_[0][2] + rhs.w * matrix_[0][3],
+                   rhs.x * matrix_[1][0] + rhs.y * matrix_[1][1] +
+                       rhs.z * matrix_[1][2] + rhs.w * matrix_[1][3],
+                   rhs.x * matrix_[2][0] + rhs.y * matrix_[2][1] +
+                       rhs.z * matrix_[2][2] + rhs.w * matrix_[2][3],
+                   rhs.x * matrix_[3][0] + rhs.y * matrix_[3][1] +
+                       rhs.z * matrix_[3][2] + rhs.w * matrix_[3][3]};
 }
 
 float Matrix::determinant() const {

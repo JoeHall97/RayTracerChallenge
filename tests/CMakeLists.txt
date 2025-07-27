@@ -7,8 +7,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(Catch2)
 
 add_executable(datastructure_tests
-        "datastructures/coord_tuple_tests.cpp"
-        "datastructures/colour_tuple_tests.cpp"
+        "datastructures/vec4_tests.cpp"
         "datastructures/matrix_tests.cpp"
 )
 target_link_libraries(datastructure_tests PRIVATE
@@ -25,6 +24,7 @@ add_executable(object_tests
         "objects/intersection_tests.cpp"
         "objects/sphere_tests.cpp"
         "objects/material_tests.cpp"
+        "objects/colour_tests.cpp"
 )
 target_link_libraries(object_tests PRIVATE
         rtc::lib

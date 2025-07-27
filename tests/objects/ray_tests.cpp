@@ -1,4 +1,4 @@
-#include <RayTracerChallenge/datastructures/coord_tuple.hpp>
+#include <RayTracerChallenge/datastructures/vec4.hpp>
 #include <RayTracerChallenge/objects/ray.hpp>
 #include <RayTracerChallenge/objects/sphere.hpp>
 #include <catch2/catch_test_macros.hpp>

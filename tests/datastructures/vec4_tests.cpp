@@ -1,13 +1,13 @@
-#include <RayTracerChallenge/datastructures/coord_tuple.hpp>
+#include <RayTracerChallenge/datastructures/vec4.hpp>
 #include <RayTracerChallenge/helpers/helpers.hpp>
 #include <catch2/catch_test_macros.hpp>
 #include <cmath>
 
-using rtc::CoordTuple, rtc::point, rtc::vector, rtc::areFloatsEqual;
+using rtc::Vec4, rtc::point, rtc::vector, rtc::areFloatsEqual;
 
 SCENARIO("A tuple with w=1.0 is a point.") {
   GIVEN("a = tuple(4.3, -4.2, 3.1, 1)") {
-    const CoordTuple a{4.3f, -4.2f, 3.1f, 1};
+    const Vec4 a{4.3f, -4.2f, 3.1f, 1};
     THEN("a.x = 4.3")
     AND_THEN("a.y = -4.2")
     AND_THEN("a.z = 3.1")
@@ -26,7 +26,7 @@ SCENARIO("A tuple with w=1.0 is a point.") {
 
 SCENARIO("A tuple with w=0 is a vector.") {
   GIVEN("a = tuple(4.3, -4.2, 3.1, 0)") {
-    const CoordTuple a{4.3f, -4.2f, 3.1f, 0};
+    const Vec4 a{4.3f, -4.2f, 3.1f, 0};
     THEN("a.x = 4.3")
     AND_THEN("a.y = -4.2")
     AND_THEN("a.z = 3.1")
@@ -47,7 +47,7 @@ SCENARIO("point() creates a tuple with w=1") {
   GIVEN("p = point(4, -4, 3)") {
     const auto p = point(4, -4, 3);
     THEN("p = tuple(4, -4, 3, 1)") {
-      const auto expected = CoordTuple{4, -4, 3, 1};
+      const auto expected = Vec4{4, -4, 3, 1};
       REQUIRE(p == expected);
     }
   }
@@ -57,7 +57,7 @@ SCENARIO("vector() creates a tuple with w=0") {
   GIVEN("v = vector(4, -4, 3)") {
     const auto v = vector(4, -4, 3);
     THEN("v = tuple(4, -4, 3, 0)") {
-      const auto expected = CoordTuple{4, -4, 3, 0};
+      const auto expected = Vec4{4, -4, 3, 0};
       REQUIRE(v == expected);
     }
   }
@@ -66,10 +66,10 @@ SCENARIO("vector() creates a tuple with w=0") {
 SCENARIO("Adding two tuples.") {
   GIVEN("a1 = tuple(3, -2, 5, 1)")
   AND_GIVEN("a2 = tuple(-2, 3, 1, 0)") {
-    const auto a1 = CoordTuple(3, -2, 5, 1);
-    const auto a2 = CoordTuple(-2, 3, 1, 0);
+    const auto a1 = Vec4(3, -2, 5, 1);
+    const auto a2 = Vec4(-2, 3, 1, 0);
     THEN("a1 + a2 = tuple(1, 1, 6, 1)") {
-      REQUIRE(a1 + a2 == CoordTuple(1, 1, 6, 1));
+      REQUIRE(a1 + a2 == Vec4(1, 1, 6, 1));
     }
   }
 }
@@ -128,37 +128,37 @@ SCENARIO("Subtracting a vector from a zero vector.") {
 
 SCENARIO("Negating a tuple.") {
   GIVEN("t = tuple(1, -2, 3, -4)") {
-    const auto t = CoordTuple{1, -2, 3, -4};
+    const auto t = Vec4{1, -2, 3, -4};
     THEN("-t = tuple(-1, 2, -3, 4)") {
       auto res = -t;
-      REQUIRE(res == CoordTuple{-1, 2, -3, 4});
+      REQUIRE(res == Vec4{-1, 2, -3, 4});
     }
   }
 }
 
 SCENARIO("Multiple a tuple by a scalar.") {
   GIVEN("a = tuple(1, -2, 3, -4)") {
-    auto a = CoordTuple{1, -2, 3, -4};
+    auto a = Vec4{1, -2, 3, -4};
     THEN("a * 3.5 = tuple(3.5, -7, 10.5, -14)") {
-      REQUIRE(a * 3.5 == CoordTuple{3.5, -7, 10.5, -14});
+      REQUIRE(a * 3.5 == Vec4{3.5, -7, 10.5, -14});
     }
   }
 }
 
 SCENARIO("Multiple a tuple by a fraction.") {
   GIVEN("a = tuple(1, -2, 3, -4)") {
-    auto a = CoordTuple{1, -2, 3, -4};
+    auto a = Vec4{1, -2, 3, -4};
     THEN("a * 0.5 = tuple(0.5, -1, 1.5, -2)") {
-      REQUIRE(a * 0.5 == CoordTuple{0.5, -1, 1.5, -2});
+      REQUIRE(a * 0.5 == Vec4{0.5, -1, 1.5, -2});
     }
   }
 }
 
 SCENARIO("Divide a tuple by a scalar.") {
   GIVEN("a = tuple(1, -2, 3, -4)") {
-    auto a = CoordTuple{1, -2, 3, -4};
+    auto a = Vec4{1, -2, 3, -4};
     THEN("a / 2 = tuple(0.5, -1, 1.5, -2)") {
-      REQUIRE(a / 2 == CoordTuple{0.5, -1, 1.5, -2});
+      REQUIRE(a / 2 == Vec4{0.5, -1, 1.5, -2});
     }
   }
 }

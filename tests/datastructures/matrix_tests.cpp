@@ -1,5 +1,5 @@
-#include <RayTracerChallenge/datastructures/coord_tuple.hpp>
 #include <RayTracerChallenge/datastructures/matrix.hpp>
+#include <RayTracerChallenge/datastructures/vec4.hpp>
 #include <RayTracerChallenge/helpers/helpers.hpp>
 #include <catch2/catch_test_macros.hpp>
 #include <numbers>
@@ -8,7 +8,7 @@
 
 using rtc::Matrix, rtc::translationMatrix, rtc::shearingMatrix,
     rtc::scalingMatrix, rtc::rotationMatrixX, rtc::rotationMatrixY,
-    rtc::rotationMatrixZ, rtc::CoordTuple, rtc::point, rtc::vector;
+    rtc::rotationMatrixZ, rtc::Vec4, rtc::point, rtc::vector;
 
 SCENARIO("Construct a 4x4 matrix.") {
   const std::string matrixString = "|  1   |  2   |  3   |  4   |\n"
@@ -113,9 +113,9 @@ SCENARIO("Multiplying a matrix by a tuple.") {
   AND_GIVEN("b = tuple(1, 2, 3, 1)") {
     const Matrix a{std::vector<std::vector<float>>{
         {1, 2, 3, 4}, {2, 4, 4, 2}, {8, 6, 4, 1}, {0, 0, 0, 1}}};
-    const CoordTuple b{1, 2, 3, 1};
+    const Vec4 b{1, 2, 3, 1};
     THEN("a * b = tuple(18, 24, 33, 1)") {
-      REQUIRE(a * b == CoordTuple{18, 24, 33, 1});
+      REQUIRE(a * b == Vec4{18, 24, 33, 1});
     }
   }
 }
