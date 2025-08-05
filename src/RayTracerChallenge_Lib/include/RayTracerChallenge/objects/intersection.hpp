@@ -24,8 +24,10 @@ struct IntersectionCompare {
   }
 };
 
-// sorted set of Intersections by t ascending
+// a sorted set of Intersections by t ascending
 using SortedIntersections = std::set<Intersection, IntersectionCompare>;
+SortedIntersections intersections(const std::vector<Object *> &objects,
+                                  const Ray &ray);
 
 std::optional<Intersection> hit(const SortedIntersections &intersections);
 } // namespace rtc

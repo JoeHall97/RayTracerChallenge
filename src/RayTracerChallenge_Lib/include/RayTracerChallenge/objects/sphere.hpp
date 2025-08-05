@@ -4,24 +4,25 @@
 #include <RayTracerChallenge/datastructures/vec4.hpp>
 #include <RayTracerChallenge/helpers/helpers.hpp>
 #include <RayTracerChallenge/objects/intersection.hpp>
-#include <RayTracerChallenge/objects/material.h>
+#include <RayTracerChallenge/objects/material.hpp>
 #include <RayTracerChallenge/objects/object.hpp>
 #include <RayTracerChallenge/objects/ray.hpp>
 
 namespace rtc {
 struct Sphere final : Object {
   Matrix transform;
-  Material material;
   Vec4 origin;
   float radius;
 
   Sphere(const Vec4 origin, const float radius)
-      : transform{identity(4)}, material{defaultMaterial()}, origin{origin},
+      : transform{identity(4)}, origin{origin}, radius{radius} {}
+
+  Sphere(const Vec4 &origin, const float radius, const Material &material)
+      : Object(material), transform{identity(4)}, origin{origin},
         radius{radius} {}
 
   Sphere(const Vec4 origin, const float radius, const Matrix &transform)
-      : transform{transform}, material{defaultMaterial()}, origin{origin},
-        radius{radius} {}
+      : transform{transform}, origin{origin}, radius{radius} {}
 
   bool operator==(const Sphere &rhs) const noexcept {
     return origin == rhs.origin && areFloatsEqual(radius, rhs.radius);
@@ -31,13 +32,14 @@ struct Sphere final : Object {
       return origin == s->origin && areFloatsEqual(radius, s->radius);
     return false;
   }
+  std::ostream &operator<<(std::ostream &os) const override;
 
   bool operator!=(const Sphere &rhs) const noexcept { return !(*this == rhs); }
 
   [[nodiscard]]
   SortedIntersections intersect(const Ray &ray) const noexcept;
   [[nodiscard]]
-  Vec4 normalAt(const Vec4 &worldPoint) const noexcept;
+  Vec4 normalAt(const Vec4 &worldPoint) const noexcept override;
 };
 
 [[nodiscard]] inline Sphere sphere() noexcept {

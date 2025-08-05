@@ -1,4 +1,4 @@
-#include <RayTracerChallenge/objects/material.h>
+#include <RayTracerChallenge/objects/material.hpp>
 
 rtc::Colour rtc::Material::lighting(const Light &light, const Vec4 &position,
                                     const Vec4 &eyeVec,

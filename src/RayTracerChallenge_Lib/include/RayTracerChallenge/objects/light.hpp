@@ -8,6 +8,7 @@ struct Light {
   Colour intensity;
   Vec4 position;
 
+  Light() = default;
   Light(const Colour &intensity, const Vec4 &position)
       : intensity(intensity), position(position) {}
 };

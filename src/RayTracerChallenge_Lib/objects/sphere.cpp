@@ -4,7 +4,7 @@
 rtc::SortedIntersections rtc::Sphere::intersect(const Ray &ray) const noexcept {
   // the vector from the sphere's center, to the Ray's origin
   const auto transformedRay = ray.transform(transform.inverse());
-  const auto sphereToRay = transformedRay.origin - origin;
+  const auto sphereToRay = transformedRay.origin - point(0, 0, 0);
   const auto a = transformedRay.direction.dot(transformedRay.direction);
   const auto b = 2 * transformedRay.direction.dot(sphereToRay);
   const auto c = sphereToRay.dot(sphereToRay) - 1;
@@ -24,4 +24,9 @@ rtc::Vec4 rtc::Sphere::normalAt(const Vec4 &worldPoint) const noexcept {
   auto worldNormal = transform.inverse().transpose() * objectNormal;
   worldNormal.w = 0;
   return worldNormal.normalise();
+}
+
+std::ostream &rtc::Sphere::operator<<(std::ostream &os) const {
+  os << "Sphere";
+  return os;
 }

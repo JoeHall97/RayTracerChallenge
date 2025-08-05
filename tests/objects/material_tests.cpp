@@ -1,5 +1,5 @@
 #include <RayTracerChallenge/datastructures/vec4.hpp>
-#include <RayTracerChallenge/objects/material.h>
+#include <RayTracerChallenge/objects/material.hpp>
 #include <catch2/catch_test_macros.hpp>
 
 SCENARIO("Lighting with the eye between the light and the surface.") {

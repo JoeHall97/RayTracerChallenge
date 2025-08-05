@@ -1,22 +1,28 @@
 set(OBJECTS_HEADERS
         "include/RayTracerChallenge/objects/canvas.hpp"
         "include/RayTracerChallenge/objects/ray.hpp"
+        "include/RayTracerChallenge/objects/object.hpp"
         "include/RayTracerChallenge/objects/intersection.hpp"
         "include/RayTracerChallenge/objects/sphere.hpp"
-        "include/RayTracerChallenge/objects/object.hpp"
         "include/RayTracerChallenge/objects/light.hpp"
-        "include/RayTracerChallenge/objects/material.h"
+        "include/RayTracerChallenge/objects/material.hpp"
+        "include/RayTracerChallenge/objects/world.hpp"
         "include/RayTracerChallenge/objects/colour.hpp"
+        "include/RayTracerChallenge/objects/precompute.hpp"
+        "include/RayTracerChallenge/objects/camera.hpp"
 )
 
 set(OBJECTS_SOURCES
+        "objects/camera.cpp"
         "objects/canvas.cpp"
         "objects/ray.cpp"
         "objects/intersection.cpp"
         "objects/sphere.cpp"
         "objects/light.cpp"
         "objects/material.cpp"
+        "objects/precompute.cpp"
         "objects/colour.cpp"
+        "objects/world.cpp"
 )
 
 set(DATASTRUCTURES_HEADERS

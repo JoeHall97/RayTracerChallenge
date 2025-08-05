@@ -38,15 +38,6 @@ void checkAndAddNumber(std::stringstream &ss, const float &number,
 }
 } // namespace
 
-bool rtc::Canvas::writePixel(const std::uint16_t x, const std::uint16_t y,
-                             const Colour colour) {
-  if (x > width || y > height) {
-    return false;
-  }
-  canvas[y][x] = colour;
-  return true;
-}
-
 std::string rtc::Canvas::toPPM() const {
   std::stringstream ss;
   // header

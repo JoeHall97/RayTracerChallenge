@@ -119,6 +119,19 @@ inline Matrix identity(const size_t size) {
   return res;
 }
 
+inline Matrix viewTransform(const Vec4 &from, const Vec4 &to, const Vec4 &up) {
+  const auto forward = (to - from).normalise();
+  const auto upNormal = up.normalise();
+  const auto left = forward.cross(upNormal);
+  const auto trueUp = left.cross(forward);
+  const auto orientation = Matrix{
+      std::vector<std::vector<float>>{{left.x, left.y, left.z, 0},
+                                      {trueUp.x, trueUp.y, trueUp.z, 0},
+                                      {-forward.x, -forward.y, -forward.z, 0},
+                                      {0, 0, 0, 1}}};
+  return orientation * translationMatrix(-from.x, -from.y, -from.z);
+}
+
 } // namespace rtc
 
 std::ostream &operator<<(std::ostream &os, const rtc::Matrix &m);

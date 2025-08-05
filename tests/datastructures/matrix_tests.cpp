@@ -657,3 +657,76 @@ SCENARIO("Chained transformations must be applied in reverse order.") {
     }
   }
 }
+
+SCENARIO("The transformation matrix for the default orientation.") {
+  GIVEN("from = point(0, 0, 0)")
+  AND_GIVEN("to = point(0, 0, -1)")
+  AND_GIVEN("up = vector(0, 1, 0)") {
+    const auto from = point(0, 0, 0);
+    const auto to = point(0, 0, -1);
+    const auto up = vector(0, 1, 0);
+    WHEN("t = viewTransform(from, to, up)") {
+      const auto t = rtc::viewTransform(from, to, up);
+      THEN("t = identityMatrix") { REQUIRE(t == rtc::identity(4)); }
+    }
+  }
+}
+
+SCENARIO("A view transformation matrix looking in the positive z direction.") {
+  GIVEN("from = point(0, 0, 0)")
+  AND_GIVEN("to = point(0, 0, 1)")
+  AND_GIVEN("up = vector(0, 1, 0)") {
+    const auto from = point(0, 0, 0);
+    const auto to = point(0, 0, 1);
+    const auto up = vector(0, 1, 0);
+    WHEN("t = viewTransform(from, to, up)") {
+      const auto t = rtc::viewTransform(from, to, up);
+      THEN("t = scalingMatrix(-1, 1, -1)") {
+        REQUIRE(t == rtc::scalingMatrix(-1, 1, -1));
+      }
+    }
+  }
+}
+
+SCENARIO("The view transformation moves the world.") {
+  GIVEN("from = point(0, 0, 8)")
+  AND_GIVEN("to = point(0, 0, 0)")
+  AND_GIVEN("up = vector(0, 1, 0)") {
+    const auto from = point(0, 0, 8);
+    const auto to = point(0, 0, 0);
+    const auto up = vector(0, 1, 0);
+    WHEN("t = viewTransform(from, to, up)") {
+      const auto t = rtc::viewTransform(from, to, up);
+      THEN("t = translationMatrix(0, 0, -8)") {
+        REQUIRE(t == rtc::translationMatrix(0, 0, -8));
+      }
+    }
+  }
+}
+
+SCENARIO("An arbitrary view transformation.") {
+  GIVEN("from = point(1, 3, 2)")
+  AND_GIVEN("to = point(4, -2, 8)")
+  AND_GIVEN("up = vector(1, 1, 0)") {
+    const auto from = point(1, 3, 2);
+    const auto to = point(4, -2, 8);
+    const auto up = vector(1, 1, 0);
+    WHEN("t = viewTransform(from, to, up)") {
+      const auto t = rtc::viewTransform(from, to, up);
+      const std::string matrixString =
+          "| -0.50709 | 0.50709 |  0.67612 | -2.36643 |"
+          "|  0.76772 | 0.60609 |  0.12122 | -2.82843 |"
+          "| -0.35857 | 0.59761 | -0.71714 |  0.00000 |"
+          "|  0.00000 | 0.00000 |  0.00000 |  1.00000 |";
+      THEN("t is the following 4x4 matrix: \n" + matrixString) {
+        const Matrix matrix{std::vector<std::vector<float>>{
+            {-0.50709f, 0.50709f, 0.67612f, -2.36643f},
+            {0.76772f, 0.60609f, 0.12122f, -2.82843f},
+            {-0.35857f, 0.59761f, -0.71714f, 0.0f},
+            {0.0f, 0.0f, 0.0f, 1.0f},
+        }};
+        REQUIRE(t == matrix);
+      }
+    }
+  }
+}

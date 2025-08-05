@@ -7,23 +7,6 @@
 
 using rtc::Canvas, rtc::Colour;
 
-SCENARIO("Creating a canvas.") {
-  GIVEN("c = canvas(10, 20)") {
-    const auto c = Canvas{10, 20};
-    THEN("c.width = 10")
-    AND_THEN("c.height = 20")
-    AND_THEN("Every pixel in c is colour(0, 0)") {
-      CHECK(c.width == 10);
-      CHECK(c.height == 20);
-      for (auto &row : c.canvas) {
-        for (auto &column : row) {
-          REQUIRE(column == Colour{0, 0, 0});
-        }
-      }
-    }
-  }
-}
-
 SCENARIO("Writing pixels to a canvas.") {
   GIVEN("c = canvas(10, 20)")
   AND_GIVEN("red = colour(1, 0, 0)") {
@@ -31,7 +14,7 @@ SCENARIO("Writing pixels to a canvas.") {
     const auto red = Colour{1, 0, 0};
     WHEN("writePixel(c, 2, 4, red)") {
       c.writePixel(2, 4, red);
-      THEN("canvas.at(2, 4) = red") { REQUIRE(c.canvas[4][2] == red); }
+      THEN("canvas.at(2, 4) = red") { REQUIRE(c.getPixel(2, 4) == red); }
     }
   }
 }

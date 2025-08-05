@@ -16,11 +16,9 @@ std::optional<Intersection> rtc::hit(const SortedIntersections &intersections) {
 
 std::ostream &operator<<(std::ostream &os, const Intersection &i) {
   os << '{' << i.t;
-  try {
-    const auto s = dynamic_cast<const rtc::Sphere *>(i.object);
+  if (const auto s = dynamic_cast<const rtc::Sphere *>(i.object);
+      s != nullptr) {
     os << ", rtc::Sphere, " << s->transform << "}";
-  } catch (std::bad_cast &ex) {
-    os << ", rtc::Object}";
   }
   return os;
 }
