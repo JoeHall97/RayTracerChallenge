@@ -39,6 +39,9 @@ public:
     return canvas[y][x];
   }
 
+  [[nodiscard]] std::size_t getWidth() const noexcept { return width; }
+  [[nodiscard]] std::size_t getHeight() const noexcept { return height; }
+
 private:
   std::vector<std::vector<Colour>> canvas;
   std::size_t width, height;
