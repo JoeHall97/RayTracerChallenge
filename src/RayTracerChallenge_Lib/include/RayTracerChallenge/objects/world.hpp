@@ -4,6 +4,7 @@
 #include <RayTracerChallenge/objects/light.hpp>
 #include <RayTracerChallenge/objects/object.hpp>
 #include <RayTracerChallenge/objects/precompute.hpp>
+#include <memory>
 #include <vector>
 
 namespace rtc {

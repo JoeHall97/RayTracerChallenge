@@ -1,6 +1,7 @@
 #pragma once
 
 #include <RayTracerChallenge/helpers/helpers.hpp>
+#include <cmath>
 #include <ostream>
 
 namespace rtc {
