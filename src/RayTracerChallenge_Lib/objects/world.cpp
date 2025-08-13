@@ -15,14 +15,15 @@ rtc::World rtc::defaultWorld() noexcept {
 }
 
 rtc::SortedIntersections rtc::World::intersections(const Ray &ray) const {
-  SortedIntersections xs{};
+  SortedIntersections intersections{};
   for (const auto &o : objects) {
     if (const auto s = dynamic_cast<const Sphere *>(o.get()); s != nullptr) {
-      const auto i = s->intersect(ray);
-      xs.insert(i.begin(), i.end());
+      if (const auto i = s->intersect(ray); !i.empty()) {
+        intersections.insert(i.begin(), i.end());
+      }
     }
   }
-  return xs;
+  return intersections;
 }
 
 rtc::Colour rtc::World::colourAt(const Ray &ray) const noexcept {
@@ -32,4 +33,16 @@ rtc::Colour rtc::World::colourAt(const Ray &ray) const noexcept {
     return Colour{0, 0, 0};
   const auto comp = prepareComputation(hit.value(), ray);
   return shadeHit(comp);
+}
+
+bool rtc::World::isShadowed(const Vec4 &point) const noexcept {
+  const auto v = light.position - point;
+  const auto distance = v.magnitude();
+  const auto direction = v.normalise();
+
+  const auto r = Ray{point, direction};
+  const auto xs = intersections(r);
+
+  const auto hit = rtc::hit(xs);
+  return hit.has_value() && hit.value().t < distance;
 }

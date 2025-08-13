@@ -61,7 +61,7 @@ set_property(TARGET rtc_lib PROPERTY CXX_STANDARD_REQUIRED ON)
 if (MSVC)
     target_compile_options(rtc_lib PRIVATE /Wall)
 else ()
-    target_compile_options(rtc_lib PRIVATE -Wall -Wextra -Werror)
+    target_compile_options(rtc_lib PRIVATE -Wall -Wextra -Wpedantic -Werror)
 endif ()
 
 add_library(rtc::lib ALIAS rtc_lib)

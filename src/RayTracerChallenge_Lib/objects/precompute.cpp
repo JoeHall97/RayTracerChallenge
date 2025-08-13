@@ -14,5 +14,6 @@ rtc::Precompute rtc::prepareComputation(const Intersection &intersection,
   } else {
     comp.inside = false;
   }
+  comp.overPoint = comp.point + comp.normalVec * EPSILON;
   return comp;
 }

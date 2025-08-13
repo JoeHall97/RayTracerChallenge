@@ -23,11 +23,10 @@ struct Material {
 
   [[nodiscard]]
   Colour lighting(const Light &light, const Vec4 &position, const Vec4 &eyeVec,
-                  const Vec4 &normalVec) const noexcept;
+                  const Vec4 &normalVec, bool inShadow = false) const noexcept;
 };
 
 [[nodiscard]] inline Material defaultMaterial() noexcept {
   return Material{Colour{1, 1, 1}, 0.1, 0.9, 0.9, 200.0};
 }
-
 } // namespace rtc

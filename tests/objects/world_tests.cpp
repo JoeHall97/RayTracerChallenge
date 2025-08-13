@@ -1,4 +1,5 @@
 #include <RayTracerChallenge/objects/ray.hpp>
+#include <RayTracerChallenge/objects/sphere.hpp>
 #include <RayTracerChallenge/objects/world.hpp>
 #include <catch2/catch_test_macros.hpp>
 
@@ -85,6 +86,93 @@ SCENARIO("The colour with an intersection behind the ray.") {
       const auto c = w.colourAt(r);
       THEN("c = inner.material.colour") {
         CHECK(c == w.objects[1]->material.colour);
+      }
+    }
+  }
+}
+
+SCENARIO(
+    "There is no shadow when nothing is collinear with a light and point.") {
+  GIVEN("w = defaultWorld()")
+  AND_GIVEN("p = point(0, 10, 0)") {
+    const auto w = rtc::defaultWorld();
+    const auto p = rtc::point(0, 10, 0);
+    THEN("w.isShadowed(p) = false") { REQUIRE(!w.isShadowed(p)); }
+  }
+}
+
+SCENARIO("There is a shadow when an object is between a point and the light.") {
+  GIVEN("w = defaultWorld()")
+  AND_GIVEN("p = point(10, -10, 10)") {
+    const auto w = rtc::defaultWorld();
+    const auto p = rtc::point(10, -10, 10);
+    THEN("w.isShadowed(p) = true") { REQUIRE(w.isShadowed(p)); }
+  }
+}
+
+SCENARIO("There is no shadow when an object is behind the light.") {
+  GIVEN("w = defaultWorld()")
+  AND_GIVEN("p = point(-20, 20, -20)") {
+    const auto w = rtc::defaultWorld();
+    const auto p = rtc::point(-20, 20, -20);
+    THEN("w.isShadowed(p) = false") { REQUIRE(!w.isShadowed(p)); }
+  }
+}
+
+SCENARIO("There is no shadow when an object is behind the point.") {
+  GIVEN("w = defaultWorld()")
+  AND_GIVEN("p = point(-2, 2, -2)") {
+    const auto w = rtc::defaultWorld();
+    const auto p = rtc::point(-2, 2, -2);
+    THEN("w.isShadowed(p) = false") { REQUIRE(!w.isShadowed(p)); }
+  }
+}
+
+SCENARIO("shadeHit() is given an intersection with a shadow.") {
+  GIVEN("w = world()")
+  AND_GIVEN("w.light = light(point(0, 0, -10), colour(1, 1, 1))")
+  AND_GIVEN("s1 = sphere()")
+  AND_GIVEN("s1 is added to w")
+  AND_GIVEN("s2 = sphere()")
+  AND_GIVEN("s2.transform = translation(0, 0, 10)")
+  AND_GIVEN("s2 is added to w")
+  AND_GIVEN("r = ray(point(0, 0, 5), vector(0, 0, 1))")
+  AND_GIVEN("i = intersection(4, s2)") {
+    auto w = rtc::World();
+    w.light = rtc::Light{rtc::Colour{1, 1, 1}, rtc::point(0, 0, -10)};
+    const auto s1 = rtc::sphere();
+    w.objects.push_back(std::make_unique<rtc::Sphere>(s1));
+    auto s2 = rtc::sphere();
+    s2.transform = rtc::translationMatrix(0, 0, 10);
+    w.objects.push_back(std::make_unique<rtc::Sphere>(s2));
+    const rtc::Ray r{rtc::point(0, 0, 5), rtc::vector(0, 0, 1)};
+    const rtc::Intersection i{4, &s2};
+    WHEN("comps = prepareComputations(i, r)")
+    AND_WHEN("c = shadeHit(w, comps)") {
+      const auto comps = rtc::prepareComputation(i, r);
+      const auto c = w.shadeHit(comps);
+      THEN("c = colour(0.1, 0.1, 0.1)") {
+        REQUIRE(c == rtc::Colour{0.1f, 0.1f, 0.1f});
+      }
+    }
+  }
+}
+
+SCENARIO("The hit should offset the point.") {
+  GIVEN("r = ray(point(0, 0, -5), vector(0, 0, 1))")
+  AND_GIVEN("shape = sphere()")
+  AND_GIVEN("shape.transform = translation(0, 0, 1)")
+  AND_GIVEN("i = intersection(5, shape)") {
+    const rtc::Ray r{rtc::point(0, 0, -5), rtc::vector(0, 0, 1)};
+    auto shape = rtc::sphere();
+    shape.transform = rtc::translationMatrix(0, 0, 1);
+    const rtc::Intersection i{5, &shape};
+    WHEN("comps = prepareComputations(i, r)") {
+      const auto comps = rtc::prepareComputation(i, r);
+      THEN("comps.overPoint.z < -EPSILON/2")
+      AND_THEN("comps.overPoint.z <= comps.point.z") {
+        REQUIRE(comps.overPoint.z < -rtc::EPSILON / 2);
+        REQUIRE(comps.overPoint.z <= comps.point.z);
       }
     }
   }

@@ -6,7 +6,7 @@
 
 namespace rtc {
 struct Precompute {
-  Vec4 point, eyeVec, normalVec;
+  Vec4 point, eyeVec, normalVec, overPoint;
   const Object *object;
   float t;
   bool inside;
