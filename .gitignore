@@ -8,3 +8,12 @@ out
 .vs
 .DS_Store
 .fleet
+
+# Added by cargo
+/target
+
+# .NET stuff
+obj
+bin
+global.json
+*.DotSettings.user

@@ -1,1 +1,0 @@
-#include <RayTracerChallenge/objects/light.hpp>
