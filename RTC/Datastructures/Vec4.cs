@@ -14,28 +14,40 @@ public struct Vec4(double x, double y, double z, double w) : IEquatable<Vec4>
     public bool IsVector => W.IsEqual(0);
     public double Magnitude => MathF.Sqrt((float)(X * X + Y * Y + Z * Z + W * W));
     public Vec4 Normalised => new(X / Magnitude, Y / Magnitude, Z / Magnitude, W / Magnitude);
-    
-    public static Vec4 operator-(Vec4 lhs) => new(-lhs.X, -lhs.Y, -lhs.Z, -lhs.W);
-    public static Vec4 operator+(Vec4 lhs, Vec4 rhs)  => new(lhs.X + rhs.X, lhs.Y + rhs.Y, lhs.Z + rhs.Z, lhs.W + rhs.W);
-    public static Vec4 operator-(Vec4 lhs, Vec4 rhs)  => new(lhs.X - rhs.X, lhs.Y - rhs.Y, lhs.Z - rhs.Z, lhs.W - rhs.W);
-    public static Vec4 operator*(Vec4 lhs, double rhs) => new(lhs.X * rhs, lhs.Y * rhs, lhs.Z * rhs, lhs.W * rhs);
-    public static Vec4 operator/(Vec4 lhs, double rhs) => new(lhs.X / rhs, lhs.Y / rhs, lhs.Z / rhs, lhs.W / rhs);
 
-    public override string ToString() => $"({X}, {Y}, {Z}, {W})";
-    
-    public override bool Equals([NotNullWhen(true)] object? obj)
+    public static Vec4 operator -(Vec4 lhs)
     {
-        return obj is Vec4 rhs && Equals(rhs);
+        return new Vec4(-lhs.X, -lhs.Y, -lhs.Z, -lhs.W);
     }
 
-    public bool Equals(Vec4 other)
+    public static Vec4 operator +(Vec4 lhs, Vec4 rhs)
     {
-        return W.IsEqual(other.W) && X.IsEqual(other.X) && Y.IsEqual(other.Y) && Z.IsEqual(other.Z);
+        return new Vec4(lhs.X + rhs.X, lhs.Y + rhs.Y, lhs.Z + rhs.Z, Math.Max(lhs.W, rhs.W));
     }
 
-    public override int GetHashCode()
+    public static Vec4 operator -(Vec4 lhs, Vec4 rhs)
     {
-        return HashCode.Combine(X, Y, Z, W);
+        return new Vec4(lhs.X - rhs.X, lhs.Y - rhs.Y, lhs.Z - rhs.Z, lhs.W - rhs.W);
+    }
+
+    public static Vec4 operator *(Vec4 lhs, double rhs)
+    {
+        return new Vec4(lhs.X * rhs, lhs.Y * rhs, lhs.Z * rhs, lhs.W * rhs);
+    }
+
+    public static Vec4 operator /(Vec4 lhs, double rhs)
+    {
+        return new Vec4(lhs.X / rhs, lhs.Y / rhs, lhs.Z / rhs, lhs.W / rhs);
+    }
+
+    public static bool operator ==(Vec4 left, Vec4 right)
+    {
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(Vec4 left, Vec4 right)
+    {
+        return !(left == right);
     }
 
     public static Vec4 Point(double x, double y, double z)
@@ -48,6 +60,26 @@ public struct Vec4(double x, double y, double z, double w) : IEquatable<Vec4>
         return new Vec4(x, y, z, 0d);
     }
 
+    public override string ToString()
+    {
+        return $"({X}, {Y}, {Z}, {W})";
+    }
+
+    public override bool Equals([NotNullWhen(true)] object? obj)
+    {
+        return obj is Vec4 rhs && Equals(rhs);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(X, Y, Z, W);
+    }
+
+    public bool Equals(Vec4 other)
+    {
+        return W.IsEqual(other.W) && X.IsEqual(other.X) && Y.IsEqual(other.Y) && Z.IsEqual(other.Z);
+    }
+
     public double Dot(Vec4 other)
     {
         return X * other.X + Y * other.Y + Z * other.Z + W * other.W;
@@ -55,6 +87,6 @@ public struct Vec4(double x, double y, double z, double w) : IEquatable<Vec4>
 
     public Vec4 Cross(Vec4 other)
     {
-        return Vector(Y * other.Z - Z * other.Y,  Z * other.X - X * other.Z, X * other.Y - Y * other.X);
+        return Vector(Y * other.Z - Z * other.Y, Z * other.X - X * other.Z, X * other.Y - Y * other.X);
     }
 }
