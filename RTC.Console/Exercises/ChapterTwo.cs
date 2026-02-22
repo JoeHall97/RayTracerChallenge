@@ -29,11 +29,11 @@ public class ChapterTwo : IChapterExercise
             proj = Tick(env, proj);
         }
 
-        File.WriteAllText("ChapterTwo.ppm", canvas.ToPpm());
-        canvas.ToPng("ChapterTwo.png");
+        canvas.SavePpm("ChapterTwo.ppm");
+        canvas.SavePng("ChapterTwo.png");
     }
 
-    private Projectile Tick(Environment env, Projectile proj)
+    private static Projectile Tick(Environment env, Projectile proj)
     {
         return new Projectile
         {

@@ -27,7 +27,7 @@ public class ChapterOne : IChapterExercise
         }
     }
 
-    private Projectile Tick(Environment env, Projectile proj)
+    private static Projectile Tick(Environment env, Projectile proj)
     {
         return new Projectile
         {

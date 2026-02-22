@@ -54,11 +54,16 @@ public class Canvas(int width, int height)
         return sb.ToString();
     }
 
+    public void SavePpm(string path)
+    {
+        File.WriteAllText("ChapterTwo.ppm", ToPpm());
+    }
+
     /// <summary>
     ///     Generates and saves a png image of the canvas.
     /// </summary>
     /// <param name="path">The path to save the png image to.</param>
-    public void ToPng(string path)
+    public void SavePng(string path)
     {
         using var image = new Image<Rgb24>(Width, Height);
 
