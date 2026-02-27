@@ -18,7 +18,7 @@ std::ostream &operator<<(std::ostream &os, const Intersection &i) {
   os << '{' << i.t;
   if (const auto s = dynamic_cast<const rtc::Sphere *>(i.object);
       s != nullptr) {
-    os << ", rtc::Sphere, " << s->transform << "}";
+    os << ", rtc::Sphere, " << s->getTransformationMatrix() << "}";
   }
   return os;
 }

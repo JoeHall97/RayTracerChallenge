@@ -12,48 +12,57 @@ int main() {
   rtc::World world{};
 
   auto floor = rtc::sphere();
-  floor.material.colour = rtc::Colour{1, 0.9, 0.9};
-  floor.material.specular = 0;
-  floor.transform = rtc::scalingMatrix(10, 0.01f, 10);
+  auto floorMaterial = floor.getMaterial();
+  floorMaterial.colour = rtc::Colour{1, 0.9, 0.9};
+  floorMaterial.specular = 0;
+  floor.setTransformationMatrix(rtc::scalingMatrix(10, 0.01f, 10));
   world.objects.push_back(std::make_unique<rtc::Sphere>(floor));
 
   auto leftWall = rtc::sphere();
-  leftWall.transform = rtc::translationMatrix(0, 0, 5) *
-                       rtc::rotationMatrixY(-std::numbers::pi_v<float> / 4) *
-                       rtc::rotationMatrixX(std::numbers::pi_v<float> / 2) *
-                       rtc::scalingMatrix(10, 0.01f, 10);
-  leftWall.material = floor.material;
+  leftWall.setTransformationMatrix(
+      rtc::translationMatrix(0, 0, 5) *
+      rtc::rotationMatrixY(-std::numbers::pi_v<float> / 4) *
+      rtc::rotationMatrixX(std::numbers::pi_v<float> / 2) *
+      rtc::scalingMatrix(10, 0.01f, 10));
+  leftWall.setMaterial(floor.getMaterial());
   world.objects.push_back(std::make_unique<rtc::Sphere>(leftWall));
 
   auto rightWall = rtc::sphere();
-  rightWall.transform = rtc::translationMatrix(0, 0, 5) *
-                        rtc::rotationMatrixY(std::numbers::pi_v<float> / 4) *
-                        rtc::rotationMatrixX(std::numbers::pi_v<float> / 2) *
-                        rtc::scalingMatrix(10, 0.01f, 10);
-  rightWall.material = floor.material;
+  rightWall.setTransformationMatrix(
+      rtc::translationMatrix(0, 0, 5) *
+      rtc::rotationMatrixY(std::numbers::pi_v<float> / 4) *
+      rtc::rotationMatrixX(std::numbers::pi_v<float> / 2) *
+      rtc::scalingMatrix(10, 0.01f, 10));
+  rightWall.setMaterial(floor.getMaterial());
   world.objects.push_back(std::make_unique<rtc::Sphere>(rightWall));
 
   auto middle = rtc::sphere();
-  middle.transform = rtc::translationMatrix(-0.5f, 1, 0.5f);
-  middle.material.colour = rtc::Colour{0.1f, 1, 0.5f};
-  middle.material.diffuse = 0.7f;
-  middle.material.specular = 0.3f;
+  middle.setTransformationMatrix(rtc::translationMatrix(-0.5f, 1, 0.5f));
+  auto middleMaterial = middle.getMaterial();
+  middleMaterial.colour = rtc::Colour{0.1f, 1, 0.5f};
+  middleMaterial.diffuse = 0.7f;
+  middleMaterial.specular = 0.3f;
+  middle.setMaterial(middleMaterial);
   world.objects.push_back(std::make_unique<rtc::Sphere>(middle));
 
   auto right = rtc::sphere();
-  right.transform = rtc::translationMatrix(1.5f, 0.5f, -0.5f) *
-                    rtc::scalingMatrix(0.5f, 0.5f, 0.5f);
-  right.material.colour = rtc::Colour{0.5f, 1, 0.1f};
-  right.material.diffuse = 0.7f;
-  right.material.specular = 0.3f;
+  right.setTransformationMatrix(rtc::translationMatrix(1.5f, 0.5f, -0.5f) *
+                                rtc::scalingMatrix(0.5f, 0.5f, 0.5f));
+  auto rightMaterial = right.getMaterial();
+  rightMaterial.colour = rtc::Colour{0.5f, 1, 0.1f};
+  rightMaterial.diffuse = 0.7f;
+  rightMaterial.specular = 0.3f;
+  right.setMaterial(rightMaterial);
   world.objects.push_back(std::make_unique<rtc::Sphere>(right));
 
   auto left = rtc::sphere();
-  left.transform = rtc::translationMatrix(-1.5f, 0.33f, -0.75f) *
-                   rtc::scalingMatrix(0.33f, 0.33f, 0.33f);
-  middle.material.colour = rtc::Colour{1, 0.8f, 0.1f};
-  middle.material.diffuse = 0.7f;
-  middle.material.specular = 0.3f;
+  left.setTransformationMatrix(rtc::translationMatrix(-1.5f, 0.33f, -0.75f) *
+                               rtc::scalingMatrix(0.33f, 0.33f, 0.33f));
+  auto leftMaterial = left.getMaterial();
+  leftMaterial.colour = rtc::Colour{1, 0.8f, 0.1f};
+  leftMaterial.diffuse = 0.7f;
+  leftMaterial.specular = 0.3f;
+  left.setMaterial(leftMaterial);
   world.objects.push_back(std::make_unique<rtc::Sphere>(left));
 
   world.light = rtc::Light{rtc::Colour{1, 1, 1}, rtc::point(-10, 10, -10)};

@@ -32,7 +32,7 @@ public:
 
   void setTransform(const Matrix &m) noexcept { transform = m; }
 
-  [[nodiscard]] Ray getRayForPixel(const float x, const float y) const noexcept;
+  [[nodiscard]] Ray getRayForPixel(std::size_t x, std::size_t y) const noexcept;
   [[nodiscard]] Canvas render(const World &world) const noexcept;
 
 private:
@@ -42,7 +42,7 @@ private:
 
   void calculatePixelSize() noexcept {
     const auto halfView = std::tan(fieldOfView / 2);
-    const auto aspect = static_cast<float>(hSize) / vSize;
+    const auto aspect = static_cast<float>(hSize) / static_cast<float>(vSize);
     if (aspect >= 1) {
       halfWidth = halfView;
       halfHeight = halfView / aspect;

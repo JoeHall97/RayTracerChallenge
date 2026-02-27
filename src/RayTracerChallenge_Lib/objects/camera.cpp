@@ -1,9 +1,9 @@
 #include <RayTracerChallenge/objects/camera.hpp>
 
-rtc::Ray rtc::Camera::getRayForPixel(const float x,
-                                     const float y) const noexcept {
-  const auto xOffset = (x + 0.5f) * pixelSize;
-  const auto yOffset = (y + 0.5f) * pixelSize;
+rtc::Ray rtc::Camera::getRayForPixel(const std::size_t x,
+                                     const std::size_t y) const noexcept {
+  const auto xOffset = (static_cast<float>(x) + 0.5f) * pixelSize;
+  const auto yOffset = (static_cast<float>(y) + 0.5f) * pixelSize;
   const auto worldX = halfWidth - xOffset;
   const auto worldY = halfHeight - yOffset;
   const auto pixel = transform.inverse() * point(worldX, worldY, -1);

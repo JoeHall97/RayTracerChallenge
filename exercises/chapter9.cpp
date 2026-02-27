@@ -3,6 +3,7 @@
 #include <RayTracerChallenge/objects/camera.hpp>
 #include <RayTracerChallenge/objects/canvas.hpp>
 #include <RayTracerChallenge/objects/colour.hpp>
+#include <RayTracerChallenge/objects/plane.hpp>
 #include <RayTracerChallenge/objects/sphere.hpp>
 #include <RayTracerChallenge/objects/world.hpp>
 #include <fstream>
@@ -11,35 +12,26 @@
 int main() {
   rtc::World world{};
 
-  auto floor = rtc::sphere();
+  auto floor = rtc::plane();
   auto floorMaterial = floor.getMaterial();
-  floorMaterial.colour = rtc::Colour{1, 0.9, 0.9};
+  floorMaterial.colour = rtc::Colour{0.5, 0.5, 0.5};
   floorMaterial.specular = 0;
   floor.setMaterial(floorMaterial);
-  floor.setTransformationMatrix(rtc::scalingMatrix(10, 0.01f, 10));
-  world.objects.push_back(std::make_unique<rtc::Sphere>(floor));
+  world.objects.push_back(std::make_unique<rtc::Plane>(floor));
 
-  auto leftWall = rtc::sphere();
-  leftWall.setTransformationMatrix(
-      rtc::translationMatrix(0, 0, 5) *
-      rtc::rotationMatrixY(-std::numbers::pi_v<float> / 4) *
+  auto wall = rtc::plane();
+  wall.setTransformationMatrix(
       rtc::rotationMatrixX(std::numbers::pi_v<float> / 2) *
-      rtc::scalingMatrix(10, 0.01f, 10));
-  leftWall.setMaterial(floor.getMaterial());
-  world.objects.push_back(std::make_unique<rtc::Sphere>(leftWall));
-
-  auto rightWall = rtc::sphere();
-  rightWall.setTransformationMatrix(
-      rtc::translationMatrix(0, 0, 5) *
-      rtc::rotationMatrixY(std::numbers::pi_v<float> / 4) *
-      rtc::rotationMatrixX(std::numbers::pi_v<float> / 2) *
-      rtc::scalingMatrix(10, 0.01f, 10));
-  rightWall.setMaterial(floor.getMaterial());
-  world.objects.push_back(std::make_unique<rtc::Sphere>(rightWall));
+      rtc::translationMatrix(0, 10, 20));
+  auto wallMaterial = floor.getMaterial();
+  wallMaterial.colour = rtc::Colour{0.5, 0.5, 0.5};
+  wallMaterial.specular = 0;
+  wall.setMaterial(floorMaterial);
+  world.objects.push_back(std::make_unique<rtc::Plane>(wall));
 
   auto middle = rtc::sphere();
-  middle.setTransformationMatrix(rtc::translationMatrix(-1.5f, 3.5f, 0.5f) *
-                                 rtc::scalingMatrix(1.5f, 3.5f, 0.5f));
+  middle.setTransformationMatrix(rtc::translationMatrix(-0.5f, 1.25f, 1.2f) *
+                                 rtc::scalingMatrix(1.25f, 1.25f, 1.25f));
   auto middleMaterial = middle.getMaterial();
   middleMaterial.colour = rtc::Colour{0.1f, 1, 0.5f};
   middleMaterial.diffuse = 0.7f;
@@ -69,13 +61,13 @@ int main() {
 
   world.light = rtc::Light{rtc::Colour{1, 1, 1}, rtc::point(-10, 10, -10)};
 
-  rtc::Camera camera{144, 144, std::numbers::pi_v<float> / 3};
+  rtc::Camera camera{240, 240, std::numbers::pi_v<float> / 3};
   camera.setTransform(rtc::viewTransform(
       rtc::point(0, 1.5f, -5), rtc::point(0, 1, 0), rtc::vector(0, 1, 0)));
 
   const rtc::Canvas canvas = camera.render(world);
   std::ofstream file;
-  file.open("test.ppm");
+  file.open("Chapter9.ppm");
   file << canvas.toPPM();
   file.close();
   return 0;

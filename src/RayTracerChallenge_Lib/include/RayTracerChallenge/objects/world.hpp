@@ -16,8 +16,8 @@ struct World {
 
   [[nodiscard]] Colour shadeHit(const Precompute &comp) const noexcept {
     const auto shadowed = isShadowed(comp.overPoint);
-    return comp.object->material.lighting(light, comp.overPoint, comp.eyeVec,
-                                          comp.normalVec, shadowed);
+    return comp.object->getMaterial().lighting(
+        light, comp.overPoint, comp.eyeVec, comp.normalVec, shadowed);
   }
 
   [[nodiscard]] Colour colourAt(const Ray &ray) const noexcept;

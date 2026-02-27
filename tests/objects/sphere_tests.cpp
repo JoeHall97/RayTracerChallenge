@@ -13,7 +13,7 @@ SCENARIO("Intersecting a scaled sphere with a ray.") {
     auto s = sphere();
     WHEN("s.transform = scaling(2, 2, 2)")
     AND_WHEN("xs = r.intersect(s)") {
-      s.transform = rtc::scalingMatrix(2, 2, 2);
+      s.setTransformationMatrix(rtc::scalingMatrix(2, 2, 2));
       const auto xs = s.intersect(r);
       THEN("xs.count = 2") { CHECK(xs.size() == 2); }
     }
@@ -27,7 +27,7 @@ SCENARIO("Intersecting a translated sphere with a ray.") {
     auto s = sphere();
     WHEN("s.transform = translation(5, 0, 0)")
     AND_WHEN("xs = r.intersect(s)") {
-      s.transform = rtc::translationMatrix(5, 0, 0);
+      s.setTransformationMatrix(rtc::translationMatrix(5, 0, 0));
       const auto xs = s.intersect(r);
       THEN("xs.count = 0") { CHECK(xs.empty()); }
     }
@@ -194,7 +194,7 @@ SCENARIO("Computing the normal on a translated sphere.") {
   GIVEN("s = sphere()")
   AND_GIVEN("s.transform = translate(point(0, 1, 0))") {
     auto s = sphere();
-    s.transform = rtc::translationMatrix(0, 1, 0);
+    s.setTransformationMatrix(rtc::translationMatrix(0, 1, 0));
     WHEN("n = s.normalAt(point(0, 1.70711, -0.70711))") {
       const auto n = s.normalAt(point(0, 1.70711f, -0.70711f));
       THEN("n = vector(0, 0.70711, -0.70711)") {
@@ -211,7 +211,7 @@ SCENARIO("Computing the normal on a transformed sphere.") {
     auto s = sphere();
     const auto m = rtc::scalingMatrix(1, 0.5, 1) *
                    rtc::rotationMatrixZ(std::numbers::pi_v<float> / 5.0f);
-    s.transform = m;
+    s.setTransformationMatrix(m);
     WHEN("n = s.normalAt(point(0, sqrt(2)/2, -sqrt(2)/2))") {
       const float y = static_cast<float>(std::sqrt(2)) / 2.0f;
       const float z = static_cast<float>(-std::sqrt(2)) / 2.0f;

@@ -37,3 +37,8 @@ add_executable(Chapter8 chapter8.cpp)
 target_link_libraries(Chapter8 PRIVATE rtc::lib)
 set_property(TARGET Chapter8 PROPERTY CXX_STANDARD 23)
 set_property(TARGET Chapter8 PROPERTY CXX_STANDARD_REQUIRED ON)
+
+add_executable(Chapter9 chapter9.cpp)
+target_link_libraries(Chapter9 PRIVATE rtc::lib)
+set_property(TARGET Chapter9 PROPERTY CXX_STANDARD 23)
+set_property(TARGET Chapter9 PROPERTY CXX_STANDARD_REQUIRED ON)

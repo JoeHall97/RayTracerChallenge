@@ -1,12 +1,14 @@
 #pragma once
 
 #include <RayTracerChallenge/helpers/helpers.hpp>
-#include <RayTracerChallenge/objects/object.hpp>
+#include <RayTracerChallenge/objects/ray.hpp>
 #include <optional>
 #include <ostream>
 #include <set>
 
 namespace rtc {
+struct Object;
+
 struct Intersection {
   float t;
   const Object *object;

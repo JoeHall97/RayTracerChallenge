@@ -79,13 +79,17 @@ SCENARIO("The colour with an intersection behind the ray.") {
   AND_GIVEN("inner.material.ambient = 1")
   AND_GIVEN("r = ray(point(0, 0, 0.75), vector(0, 0, -1))") {
     const auto w = rtc::defaultWorld();
-    w.objects[0]->material.ambient = 1;
-    w.objects[1]->material.ambient = 1;
+    auto obj1Material = w.objects[0]->getMaterial();
+    auto obj2Material = w.objects[1]->getMaterial();
+    obj1Material.ambient = 1;
+    obj2Material.ambient = 1;
+    w.objects[0]->setMaterial(obj1Material);
+    w.objects[1]->setMaterial(obj2Material);
     const rtc::Ray r{rtc::point(0, 0, 0.75), rtc::vector(0, 0, -1)};
     WHEN("c = w.colourAt(r)") {
       const auto c = w.colourAt(r);
       THEN("c = inner.material.colour") {
-        CHECK(c == w.objects[1]->material.colour);
+        CHECK(c == w.objects[1]->getMaterial().colour);
       }
     }
   }
@@ -143,7 +147,7 @@ SCENARIO("shadeHit() is given an intersection with a shadow.") {
     const auto s1 = rtc::sphere();
     w.objects.push_back(std::make_unique<rtc::Sphere>(s1));
     auto s2 = rtc::sphere();
-    s2.transform = rtc::translationMatrix(0, 0, 10);
+    s2.setTransformationMatrix(rtc::translationMatrix(0, 0, 10));
     w.objects.push_back(std::make_unique<rtc::Sphere>(s2));
     const rtc::Ray r{rtc::point(0, 0, 5), rtc::vector(0, 0, 1)};
     const rtc::Intersection i{4, &s2};
@@ -165,7 +169,7 @@ SCENARIO("The hit should offset the point.") {
   AND_GIVEN("i = intersection(5, shape)") {
     const rtc::Ray r{rtc::point(0, 0, -5), rtc::vector(0, 0, 1)};
     auto shape = rtc::sphere();
-    shape.transform = rtc::translationMatrix(0, 0, 1);
+    shape.setTransformationMatrix(rtc::translationMatrix(0, 0, 1));
     const rtc::Intersection i{5, &shape};
     WHEN("comps = prepareComputations(i, r)") {
       const auto comps = rtc::prepareComputation(i, r);

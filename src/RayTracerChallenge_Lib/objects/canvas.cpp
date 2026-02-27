@@ -1,5 +1,3 @@
-#include "RayTracerChallenge/objects/canvas.hpp"
-
 #include <RayTracerChallenge/objects/canvas.hpp>
 #include <RayTracerChallenge/objects/colour.hpp>
 #include <cmath>

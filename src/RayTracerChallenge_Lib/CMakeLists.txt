@@ -10,6 +10,8 @@ set(OBJECTS_HEADERS
         "include/RayTracerChallenge/objects/colour.hpp"
         "include/RayTracerChallenge/objects/precompute.hpp"
         "include/RayTracerChallenge/objects/camera.hpp"
+        "include/RayTracerChallenge/objects/test_shape.hpp"
+        "include/RayTracerChallenge/objects/plane.hpp"
 )
 
 set(OBJECTS_SOURCES
@@ -23,6 +25,8 @@ set(OBJECTS_SOURCES
         "objects/precompute.cpp"
         "objects/colour.cpp"
         "objects/world.cpp"
+        "objects/test_shape.cpp"
+        "objects/plane.cpp"
 )
 
 set(DATASTRUCTURES_HEADERS
@@ -59,7 +63,7 @@ set_property(TARGET rtc_lib PROPERTY CXX_STANDARD 23)
 set_property(TARGET rtc_lib PROPERTY CXX_STANDARD_REQUIRED ON)
 
 if (MSVC)
-    target_compile_options(rtc_lib PRIVATE /Wall)
+    target_compile_options(rtc_lib PRIVATE /W4 /WX)
 else ()
     target_compile_options(rtc_lib PRIVATE -Wall -Wextra -Wpedantic -Werror)
 endif ()

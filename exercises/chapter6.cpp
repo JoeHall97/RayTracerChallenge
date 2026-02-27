@@ -15,8 +15,10 @@ int main() {
 
   const auto rayOrigin = rtc::point(0, 0, -5);
   auto shape = rtc::sphere();
-  shape.material.colour = rtc::Colour{0.3, 0.2, 1};
-  shape.transform = rtc::scalingMatrix(1.3, 0.4, 1);
+  auto shapeMaterial = shape.getMaterial();
+  shapeMaterial.colour = rtc::Colour{0.3, 0.2, 1};
+  shape.setMaterial(shapeMaterial);
+  shape.setTransformationMatrix(rtc::scalingMatrix(1.3, 0.4, 1));
   const rtc::Light light{rtc::Colour{1, 1, 1}, rtc::point(-10, 10, -10)};
   rtc::Canvas canvas{PIXELS, PIXELS};
 
@@ -34,7 +36,7 @@ int main() {
         const auto normal = shape.normalAt(point);
         const auto eye = -ray.direction;
         const auto colour =
-            shape.material.lighting(light, point, eye, normal, false);
+            shape.getMaterial().lighting(light, point, eye, normal, false);
         canvas.writePixel(x, y, colour);
       }
     }
