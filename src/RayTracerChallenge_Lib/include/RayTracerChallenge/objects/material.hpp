@@ -3,16 +3,64 @@
 #include <RayTracerChallenge/helpers/helpers.hpp>
 #include <RayTracerChallenge/objects/colour.hpp>
 #include <RayTracerChallenge/objects/light.hpp>
+#include <RayTracerChallenge/objects/patterns.hpp>
+#include <memory>
 
 namespace rtc {
+
 struct Material {
   Colour colour;
+  std::unique_ptr<Pattern> pattern;
   float ambient, diffuse, specular, shininess;
 
   Material(const Colour colour, const float ambient, const float diffuse,
            const float specular, const float shininess)
-      : colour(colour), ambient(ambient), diffuse(diffuse), specular(specular),
-        shininess(shininess) {}
+      : colour(colour), pattern(nullptr), ambient(ambient), diffuse(diffuse),
+        specular(specular), shininess(shininess) {}
+
+  Material(const Colour colour, std::unique_ptr<Pattern> pattern,
+           const float ambient, const float diffuse, const float specular,
+           const float shininess)
+      : colour(colour), pattern(std::move(pattern)), ambient(ambient),
+        diffuse(diffuse), specular(specular), shininess(shininess) {}
+
+  Material(const Material &other)
+      : colour(other.colour),
+        pattern(other.pattern ? other.pattern->clone() : nullptr),
+        ambient(other.ambient), diffuse(other.diffuse),
+        specular(other.specular), shininess(other.shininess) {}
+
+  Material(Material &&other) noexcept
+      : colour(other.colour),
+        pattern(other.pattern ? std::move(other.pattern) : nullptr),
+        ambient(other.ambient), diffuse(other.diffuse),
+        specular(other.specular), shininess(other.shininess) {}
+
+  Material &operator=(const Material &rhs) noexcept {
+    if (this == &rhs) {
+      return *this;
+    }
+    colour = rhs.colour;
+    pattern = rhs.pattern ? rhs.pattern->clone() : nullptr;
+    ambient = rhs.ambient;
+    diffuse = rhs.diffuse;
+    specular = rhs.specular;
+    shininess = rhs.shininess;
+    return *this;
+  }
+
+  Material &operator=(Material &&rhs) noexcept {
+    if (this == &rhs) {
+      return *this;
+    }
+    colour = rhs.colour;
+    pattern = rhs.pattern ? std::move(rhs.pattern) : nullptr;
+    ambient = rhs.ambient;
+    diffuse = rhs.diffuse;
+    specular = rhs.specular;
+    shininess = rhs.shininess;
+    return *this;
+  }
 
   bool operator==(const Material &rhs) const noexcept {
     return colour == rhs.colour && areFloatsEqual(ambient, rhs.ambient) &&
@@ -22,7 +70,8 @@ struct Material {
   }
 
   [[nodiscard]]
-  Colour lighting(const Light &light, const Vec4 &position, const Vec4 &eyeVec,
+  Colour lighting(const Object *object, const Light &light,
+                  const Vec4 &position, const Vec4 &eyeVec,
                   const Vec4 &normalVec, bool inShadow = false) const noexcept;
 };
 

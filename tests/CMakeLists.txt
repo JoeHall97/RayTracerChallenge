@@ -30,6 +30,7 @@ add_executable(object_tests
         "objects/world_tests.cpp"
         "objects/test_shape_tests.cpp"
         "objects/plane_tests.cpp"
+        "objects/patterns_tests.cpp"
 )
 target_link_libraries(object_tests PRIVATE
         rtc::lib

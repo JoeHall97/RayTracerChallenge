@@ -1,10 +1,16 @@
 #include <RayTracerChallenge/objects/material.hpp>
+#include <RayTracerChallenge/objects/patterns.hpp>
 
-rtc::Colour rtc::Material::lighting(const Light &light, const Vec4 &position,
-                                    const Vec4 &eyeVec, const Vec4 &normalVec,
+rtc::Colour rtc::Material::lighting(const Object *object, const Light &light,
+                                    const Vec4 &position, const Vec4 &eyeVec,
+                                    const Vec4 &normalVec,
                                     const bool inShadow) const noexcept {
+  Colour materialColour = colour;
+  if (pattern != nullptr) {
+    materialColour = pattern->colourAtObject(object, position);
+  }
   // combines the light's intensity/colour with the surface colour
-  const auto effectiveColour = colour * light.intensity;
+  const auto effectiveColour = materialColour * light.intensity;
   // find the direction of the light source
   const auto lightVec = (light.position - position).normalise();
   // compute the ambient contribution

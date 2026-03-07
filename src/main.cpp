@@ -14,6 +14,8 @@ int main() {
 
   auto floor = rtc::plane();
   auto floorMaterial = floor.getMaterial();
+  floorMaterial.pattern =
+      std::make_unique<rtc::StripePattern>(rtc::WHITE, rtc::BLACK);
   floorMaterial.colour = rtc::Colour{0.5, 0.5, 0.5};
   floorMaterial.specular = 0;
   floor.setMaterial(floorMaterial);
@@ -33,6 +35,8 @@ int main() {
   middle.setTransformationMatrix(rtc::translationMatrix(-0.5f, 1.25f, 1.2f) *
                                  rtc::scalingMatrix(1.25f, 1.25f, 1.25f));
   auto middleMaterial = middle.getMaterial();
+  middleMaterial.pattern =
+      std::make_unique<rtc::StripePattern>(rtc::WHITE, rtc::BLACK);
   middleMaterial.colour = rtc::Colour{0.1f, 1, 0.5f};
   middleMaterial.diffuse = 0.7f;
   middleMaterial.specular = 0.3f;
@@ -43,6 +47,8 @@ int main() {
   right.setTransformationMatrix(rtc::translationMatrix(1.5f, 0.5f, -0.5f) *
                                 rtc::scalingMatrix(0.5f, 0.5f, 0.5f));
   auto rightMaterial = right.getMaterial();
+  rightMaterial.pattern =
+      std::make_unique<rtc::StripePattern>(rtc::WHITE, rtc::BLACK);
   rightMaterial.colour = rtc::Colour{0.5f, 1, 0.1f};
   rightMaterial.diffuse = 0.7f;
   rightMaterial.specular = 0.3f;
@@ -53,6 +59,8 @@ int main() {
   left.setTransformationMatrix(rtc::translationMatrix(-1.5f, 0.33f, -0.75f) *
                                rtc::scalingMatrix(0.33f, 0.33f, 0.33f));
   auto leftMaterial = left.getMaterial();
+  leftMaterial.pattern =
+      std::make_unique<rtc::StripePattern>(rtc::WHITE, rtc::BLACK);
   leftMaterial.colour = rtc::Colour{1, 0.8f, 0.1f};
   leftMaterial.diffuse = 0.7f;
   leftMaterial.specular = 0.3f;
@@ -61,7 +69,7 @@ int main() {
 
   world.light = rtc::Light{rtc::Colour{1, 1, 1}, rtc::point(-10, 10, -10)};
 
-  rtc::Camera camera{240, 240, std::numbers::pi_v<float> / 3};
+  rtc::Camera camera{144, 144, std::numbers::pi_v<float> / 3};
   camera.setTransform(rtc::viewTransform(
       rtc::point(0, 1.5f, -5), rtc::point(0, 1, 0), rtc::vector(0, 1, 0)));
 

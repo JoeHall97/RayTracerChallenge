@@ -35,8 +35,8 @@ int main() {
         const auto point = ray.position(hit->t);
         const auto normal = shape.normalAt(point);
         const auto eye = -ray.direction;
-        const auto colour =
-            shape.getMaterial().lighting(light, point, eye, normal, false);
+        const auto colour = shape.getMaterial().lighting(&shape, light, point,
+                                                         eye, normal, false);
         canvas.writePixel(x, y, colour);
       }
     }
