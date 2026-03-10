@@ -7,7 +7,7 @@ rtc::Colour rtc::Material::lighting(const Object *object, const Light &light,
                                     const bool inShadow) const noexcept {
   Colour materialColour = colour;
   if (pattern != nullptr) {
-    materialColour = pattern->colourAtObject(object, position);
+    materialColour = pattern->patternAtObject(object, position);
   }
   // combines the light's intensity/colour with the surface colour
   const auto effectiveColour = materialColour * light.intensity;

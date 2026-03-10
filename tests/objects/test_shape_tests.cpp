@@ -1,5 +1,6 @@
 #include <RayTracerChallenge/objects/test_shape.hpp>
 #include <catch2/catch_test_macros.hpp>
+#include <numbers>
 
 SCENARIO("The default transformation") {
   GIVEN("s = testShape()") {
