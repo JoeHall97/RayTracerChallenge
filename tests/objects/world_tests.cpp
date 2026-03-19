@@ -1,3 +1,5 @@
+#include "RayTracerChallenge/objects/plane.hpp"
+
 #include <RayTracerChallenge/objects/ray.hpp>
 #include <RayTracerChallenge/objects/sphere.hpp>
 #include <RayTracerChallenge/objects/world.hpp>
@@ -178,6 +180,146 @@ SCENARIO("The hit should offset the point.") {
         REQUIRE(comps.overPoint.z < -rtc::EPSILON / 2);
         REQUIRE(comps.overPoint.z <= comps.point.z);
       }
+    }
+  }
+}
+
+SCENARIO("The reflected colour for a non-reflective material.") {
+  GIVEN("w = defaultWorld()")
+  AND_GIVEN("r = ray(point(0, 0, 0), vector(0, 0, 1))")
+  AND_GIVEN("shape = w.objects[1]")
+  AND_GIVEN("shape.material.ambient = 1")
+  AND_GIVEN("i = intersection(1, shape)") {
+    const auto w = rtc::defaultWorld();
+    const auto r = rtc::Ray{rtc::point(0, 0, 0), rtc::vector(0, 0, 1)};
+    const auto shape = w.objects[1].get();
+    const auto i = rtc::Intersection{1, shape};
+    WHEN("comps = prepareComputations(i, r)")
+    AND_WHEN("c = reflect(comps)") {
+      const auto comps = rtc::prepareComputation(i, r);
+      const auto c = w.reflectedColour(comps, 1);
+      THEN("c = colour(0, 0, 0)") { CHECK(c == rtc::Colour{0, 0, 0}); }
+    }
+  }
+}
+
+SCENARIO("The reflected colour for a reflective material.") {
+  GIVEN("w = defaultWorld()")
+  AND_GIVEN("shape = plane()")
+  AND_GIVEN("shape.material.reflective = 0.5")
+  AND_GIVEN("shape.transform = translation(0,-1,0)")
+  AND_GIVEN("shape is added to w")
+  AND_GIVEN("r = ray(point(0, 0, -3), vector(0, -sqrt(2)/2, sqrt(2)/2))")
+  AND_GIVEN("i = intersection(sqrt(2), shape)") {
+    auto w = rtc::defaultWorld();
+    auto shape = rtc::plane();
+    auto shapeMaterial = shape.getMaterial();
+    shapeMaterial.reflective = 0.5;
+    shape.setMaterial(shapeMaterial);
+    shape.setTransformationMatrix(rtc::translationMatrix(0, -1, 0));
+    w.objects.emplace_back(std::make_unique<rtc::Plane>(shape));
+    const auto r =
+        rtc::Ray{rtc::point(0, 0, -3),
+                 rtc::vector(0, -std::sqrtf(2) / 2, std::sqrtf(2) / 2)};
+    const auto i = rtc::Intersection{std::sqrtf(2), &shape};
+    WHEN("comps = prepareComputations(i, r)")
+    AND_WHEN("c = reflect(comps)") {
+      const auto comps = rtc::prepareComputation(i, r);
+      const auto c = w.reflectedColour(comps, 1);
+      THEN("c = colour(0.19032, 0.2379, 0.14274)") {
+        CHECK(c == rtc::Colour(0.19032, 0.2379, 0.14274));
+      }
+    }
+  }
+}
+
+SCENARIO("shadeHit() with a reflective material.") {
+  GIVEN("w = defaultWorld()")
+  AND_GIVEN("shape = plane()")
+  AND_GIVEN("shape.material.reflective = 0.5")
+  AND_GIVEN("shape.transform = translation(0,-1,0)")
+  AND_GIVEN("shape is added to w")
+  AND_GIVEN("r = ray(point(0, 0, -3), vector(0, -sqrt(2)/2, sqrt(2)/2))")
+  AND_GIVEN("i = intersection(sqrt(2), shape)") {
+    auto w = rtc::defaultWorld();
+    auto shape = rtc::plane();
+    auto shapeMaterial = shape.getMaterial();
+    shapeMaterial.reflective = 0.5;
+    shape.setMaterial(shapeMaterial);
+    shape.setTransformationMatrix(rtc::translationMatrix(0, -1, 0));
+    w.objects.emplace_back(std::make_unique<rtc::Plane>(shape));
+    const auto r =
+        rtc::Ray{rtc::point(0, 0, -3),
+                 rtc::vector(0, -std::sqrtf(2) / 2, std::sqrtf(2) / 2)};
+    const auto i = rtc::Intersection{std::sqrtf(2), &shape};
+    WHEN("comps = prepareComputations(i, r)")
+    AND_WHEN("c = shadeHit(w, comps)") {
+      const auto comps = rtc::prepareComputation(i, r);
+      const auto c = w.shadeHitWithReflections(comps, 1);
+      THEN("c = colour(0.87677, 0.92436, 0.82918)") {
+        CHECK(c == rtc::Colour(0.87677f, 0.92436f, 0.82918f));
+      }
+    }
+  }
+}
+
+SCENARIO("colourAt() with mutually reflective surfaces.") {
+  GIVEN("w = defaultWorld()")
+  AND_GIVEN("w.light = pointLight(point(0,0,0), colour(1,1,1))")
+  AND_GIVEN("lower = plane()")
+  AND_GIVEN("lower.material.reflective = 1")
+  AND_GIVEN("lower.transform = translation(0,-1,0)")
+  AND_GIVEN("lower is added to w")
+  AND_GIVEN("upper = plane()")
+  AND_GIVEN("upper.material.reflective = 1")
+  AND_GIVEN("upper.transform = translation(0,1,0)")
+  AND_GIVEN("upper is added to w")
+  AND_GIVEN("r = ray(point(0,0,0), vector(0,1,0))") {
+    auto w = rtc::defaultWorld();
+    auto lower = rtc::plane();
+    auto lowerMaterial = lower.getMaterial();
+    lowerMaterial.reflective = 1;
+    lower.setMaterial(lowerMaterial);
+    lower.setTransformationMatrix(rtc::translationMatrix(0, -1, 0));
+    w.objects.emplace_back(std::make_unique<rtc::Plane>(lower));
+    auto upper = rtc::plane();
+    auto upperMaterial = upper.getMaterial();
+    upperMaterial.reflective = 1;
+    upper.setMaterial(upperMaterial);
+    upper.setTransformationMatrix(rtc::translationMatrix(0, 1, 0));
+    w.objects.emplace_back(std::make_unique<rtc::Plane>(upper));
+    const auto r = rtc::Ray{rtc::point(0, 0, 0), rtc::vector(0, 1, 0)};
+    THEN("w.colourAt(r) should terminate.") {
+      REQUIRE_NOTHROW(w.colourAtWithReflections(r, 2));
+    }
+  }
+}
+
+SCENARIO("The reflected colour at the maximum recursion depth.") {
+  GIVEN("w = defaultWorld()")
+  AND_GIVEN("w.light = pointLight(point(0,0,0), colour(1,1,1))")
+  AND_GIVEN("shape = plane()")
+  AND_GIVEN("shape.material.reflective = 0.5")
+  AND_GIVEN("shape.transform = translation(0,-1,0)")
+  AND_GIVEN("shape is added to w")
+  AND_GIVEN("r = ray(point(0, 0, -3), vector(0, -sqrt(2)/2, sqrt(2)/2))")
+  AND_GIVEN("i = intersection(sqrt(2), shape)") {
+    auto w = rtc::defaultWorld();
+    auto shape = rtc::plane();
+    auto shapeMaterial = shape.getMaterial();
+    shapeMaterial.reflective = 0.5;
+    shape.setMaterial(shapeMaterial);
+    shape.setTransformationMatrix(rtc::translationMatrix(0, -1, 0));
+    w.objects.emplace_back(std::make_unique<rtc::Plane>(shape));
+    const auto r =
+        rtc::Ray{rtc::point(0, 0, -3),
+                 rtc::vector(0, -std::sqrtf(2) / 2, std::sqrtf(2) / 2)};
+    const auto i = rtc::Intersection{std::sqrtf(2), &shape};
+    WHEN("comps = prepareComputations(i, r)")
+    AND_WHEN("c = reflectedColour(w, comps, 0)") {
+      const auto comps = rtc::prepareComputation(i, r);
+      const auto c = w.reflectedColour(comps, 0);
+      THEN("c = colour(0,0,0)") { CHECK(c == rtc::Colour(0, 0, 0)); }
     }
   }
 }

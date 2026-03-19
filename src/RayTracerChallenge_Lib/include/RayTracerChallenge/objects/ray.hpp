@@ -5,7 +5,6 @@
 
 namespace rtc {
 struct Ray {
-public:
   Vec4 origin;
   Vec4 direction;
 

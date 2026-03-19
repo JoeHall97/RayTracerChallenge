@@ -8,16 +8,16 @@
 namespace rtc {
 class Camera {
 public:
-  Camera(const Matrix &transform, const std::size_t hSize,
-         const std::size_t vSize, const float fieldOfView)
-      : transform{transform}, hSize{hSize}, vSize{vSize},
+  Camera(const Matrix &transform, const std::size_t horizontalSize,
+         const std::size_t verticalSize, const float fieldOfView)
+      : transform{transform}, hSize{horizontalSize}, vSize{verticalSize},
         fieldOfView{fieldOfView} {
     calculatePixelSize();
   }
 
-  Camera(const std::size_t hSize, const std::size_t vSize,
+  Camera(const std::size_t horizontalSize, const std::size_t verticalSize,
          const float fieldOfView)
-      : transform{identity(4)}, hSize{hSize}, vSize{vSize},
+      : transform{identity(4)}, hSize{horizontalSize}, vSize{verticalSize},
         fieldOfView{fieldOfView} {
     calculatePixelSize();
   }

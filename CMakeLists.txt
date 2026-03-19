@@ -5,6 +5,7 @@ project(RayTracerChallenge CXX)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include(CTest)
+add_subdirectory(lib)
 add_subdirectory(src)
 add_subdirectory(tests)
 add_subdirectory(exercises)

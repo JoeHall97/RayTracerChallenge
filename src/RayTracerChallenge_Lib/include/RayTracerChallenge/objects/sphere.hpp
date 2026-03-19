@@ -67,4 +67,9 @@ private:
   return Sphere{point(0, 0, 0), 1};
 }
 
+[[nodiscard]] inline Sphere glassSphere() noexcept {
+  return Sphere{point(0, 0, 0), 1,
+                Material{Colour{1, 1, 1}, 0.1, 0.9, 0.9, 200.0, 0, 1, 1.5}};
+}
+
 } // namespace rtc

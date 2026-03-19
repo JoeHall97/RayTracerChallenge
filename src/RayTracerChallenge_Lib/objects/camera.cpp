@@ -1,4 +1,6 @@
 #include <RayTracerChallenge/objects/camera.hpp>
+#include <boost/asio.hpp>
+#include <boost/atomic.hpp>
 
 rtc::Ray rtc::Camera::getRayForPixel(const std::size_t x,
                                      const std::size_t y) const noexcept {
@@ -13,15 +15,20 @@ rtc::Ray rtc::Camera::getRayForPixel(const std::size_t x,
 }
 
 rtc::Canvas rtc::Camera::render(const World &world) const noexcept {
-  Canvas image{vSize, hSize};
+  Canvas image{hSize, vSize};
+  boost::asio::thread_pool pool{std::thread::hardware_concurrency()};
 
-  for (std::size_t y = 0; y < hSize; y++) {
-    for (std::size_t x = 0; x < vSize; x++) {
-      const auto ray = getRayForPixel(x, y);
-      const auto colour = world.colourAt(ray);
-      image.writePixel(x, y, colour);
-    }
+  for (std::size_t y = 0; y < vSize; y++) {
+    boost::asio::post(pool, [&, y] {
+      for (std::size_t x = 0; x < hSize; x++) {
+        const auto ray = getRayForPixel(x, y);
+        const auto colour = world.colourAtWithReflections(ray, 5);
+        image.writePixel(x, y, colour);
+      }
+    });
   }
+
+  pool.join();
 
   return image;
 }

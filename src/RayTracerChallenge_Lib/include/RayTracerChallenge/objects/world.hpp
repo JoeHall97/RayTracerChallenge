@@ -4,6 +4,7 @@
 #include <RayTracerChallenge/objects/light.hpp>
 #include <RayTracerChallenge/objects/object.hpp>
 #include <RayTracerChallenge/objects/precompute.hpp>
+#include <cstdint>
 #include <memory>
 #include <vector>
 
@@ -13,15 +14,15 @@ struct World {
   Light light;
 
   [[nodiscard]] SortedIntersections intersections(const Ray &ray) const;
-
-  [[nodiscard]] Colour shadeHit(const Precompute &comp) const noexcept {
-    const auto shadowed = isShadowed(comp.overPoint);
-    return comp.object->getMaterial().lighting(comp.object, light,
-                                               comp.overPoint, comp.eyeVec,
-                                               comp.normalVec, shadowed);
-  }
-
+  [[nodiscard]] Colour shadeHit(const Precompute &comp) const noexcept;
+  [[nodiscard]] Colour
+  shadeHitWithReflections(const Precompute &comp,
+                          const uint8_t depth) const noexcept;
+  [[nodiscard]] Colour reflectedColour(const Precompute &comp,
+                                       const uint8_t depth) const noexcept;
   [[nodiscard]] Colour colourAt(const Ray &ray) const noexcept;
+  [[nodiscard]] Colour
+  colourAtWithReflections(const Ray &ray, const uint8_t depth) const noexcept;
   [[nodiscard]] bool isShadowed(const Vec4 &point) const noexcept;
 };
 

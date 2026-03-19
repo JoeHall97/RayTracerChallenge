@@ -61,6 +61,12 @@ target_sources(rtc_lib
         ${OBJECTS_SOURCES} ${DATASTRUCTURES_SOURCES} ${HELPERS_SOURCES}
 )
 
+target_link_libraries(rtc_lib PRIVATE
+        Boost::asio
+        Boost::thread
+        Boost::atomic
+)
+
 set_property(TARGET rtc_lib PROPERTY CXX_STANDARD 23)
 set_property(TARGET rtc_lib PROPERTY CXX_STANDARD_REQUIRED ON)
 

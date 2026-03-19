@@ -35,6 +35,18 @@ rtc::Colour rtc::World::colourAt(const Ray &ray) const noexcept {
   return shadeHit(comp);
 }
 
+rtc::Colour
+rtc::World::colourAtWithReflections(const Ray &ray,
+                                    const uint8_t depth) const noexcept {
+  const auto xs = intersections(ray);
+  const auto hit = rtc::hit(xs);
+  if (!hit.has_value()) {
+    return Colour{0, 0, 0};
+  }
+  const auto comp = prepareComputation(hit.value(), ray);
+  return shadeHitWithReflections(comp, depth);
+}
+
 bool rtc::World::isShadowed(const Vec4 &point) const noexcept {
   const auto v = light.position - point;
   const auto distance = v.magnitude();
@@ -45,4 +57,36 @@ bool rtc::World::isShadowed(const Vec4 &point) const noexcept {
 
   const auto hit = rtc::hit(xs);
   return hit.has_value() && hit.value().t < distance;
+}
+
+[[nodiscard]] rtc::Colour
+rtc::World::reflectedColour(const Precompute &comp,
+                            const uint8_t depth) const noexcept {
+  if (comp.object->getMaterial().reflective == 0 || depth == 0) {
+    return BLACK;
+  }
+
+  const auto reflectRay = Ray{comp.overPoint, comp.reflectVec};
+  const auto colour = colourAtWithReflections(reflectRay, depth - 1);
+
+  return colour * comp.object->getMaterial().reflective;
+}
+
+[[nodiscard]] rtc::Colour
+rtc::World::shadeHit(const Precompute &comp) const noexcept {
+  const auto shadowed = isShadowed(comp.overPoint);
+  return comp.object->getMaterial().lighting(comp.object, light, comp.overPoint,
+                                             comp.eyeVec, comp.normalVec,
+                                             shadowed);
+}
+
+[[nodiscard]] rtc::Colour
+rtc::World::shadeHitWithReflections(const Precompute &comp,
+                                    const uint8_t depth) const noexcept {
+  const auto shadowed = isShadowed(comp.overPoint);
+  const auto surface = comp.object->getMaterial().lighting(
+      comp.object, light, comp.overPoint, comp.eyeVec, comp.normalVec,
+      shadowed);
+  const auto reflected = reflectedColour(comp, depth);
+  return surface + reflected;
 }
