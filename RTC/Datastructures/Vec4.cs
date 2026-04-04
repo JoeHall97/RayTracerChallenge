@@ -3,6 +3,13 @@ using RTC.Helpers;
 
 namespace RTC.Datastructures;
 
+/// <summary>
+/// A 4-dimensional tuple of doubles.
+/// </summary>
+/// <param name="x"></param>
+/// <param name="y"></param>
+/// <param name="z"></param>
+/// <param name="w"></param>
 public struct Vec4(double x, double y, double z, double w) : IEquatable<Vec4>
 {
     public double X { get; set; } = x;
@@ -10,9 +17,21 @@ public struct Vec4(double x, double y, double z, double w) : IEquatable<Vec4>
     public double Z { get; set; } = z;
     public double W { get; set; } = w;
 
+    /// <summary>
+    /// Whether the tuple is a point or not.
+    /// </summary>
     public bool IsPoint => W.IsEqual(1);
+    /// <summary>
+    /// Whether the tuple is a vector or not.
+    /// </summary>
     public bool IsVector => W.IsEqual(0);
+    /// <summary>
+    /// The magnitude of the tuple.
+    /// </summary>
     public double Magnitude => MathF.Sqrt((float)(X * X + Y * Y + Z * Z + W * W));
+    /// <summary>
+    /// The normalised version of the tuple.
+    /// </summary>
     public Vec4 Normalised => new(X / Magnitude, Y / Magnitude, Z / Magnitude, W / Magnitude);
 
     public static Vec4 operator -(Vec4 lhs)
@@ -50,11 +69,25 @@ public struct Vec4(double x, double y, double z, double w) : IEquatable<Vec4>
         return !(left == right);
     }
 
+    /// <summary>
+    /// Creates a point from the given coordinates.
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <param name="z"></param>
+    /// <returns>The created point.</returns>
     public static Vec4 Point(double x, double y, double z)
     {
         return new Vec4(x, y, z, 1d);
     }
 
+    /// <summary>
+    /// Creates a vector from the given coordinates.
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <param name="z"></param>
+    /// <returns>The created vector.</returns>
     public static Vec4 Vector(double x, double y, double z)
     {
         return new Vec4(x, y, z, 0d);
@@ -80,11 +113,21 @@ public struct Vec4(double x, double y, double z, double w) : IEquatable<Vec4>
         return W.IsEqual(other.W) && X.IsEqual(other.X) && Y.IsEqual(other.Y) && Z.IsEqual(other.Z);
     }
 
+    /// <summary>
+    /// Calculates the dot product of the two tuples.
+    /// </summary>
+    /// <param name="other">The other tuple to calculate the dot product with.</param>
+    /// <returns>The dot product of the two tuples.</returns>
     public double Dot(Vec4 other)
     {
         return X * other.X + Y * other.Y + Z * other.Z + W * other.W;
     }
 
+    /// <summary>
+    /// Calculates the cross-product of the two tuples.
+    /// </summary>
+    /// <param name="other">The other tuple to calculate the cross-product with.</param>
+    /// <returns>The cross-product of the two tuples.</returns>
     public Vec4 Cross(Vec4 other)
     {
         return Vector(Y * other.Z - Z * other.Y, Z * other.X - X * other.Z, X * other.Y - Y * other.X);

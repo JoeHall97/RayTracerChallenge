@@ -5,6 +5,65 @@ namespace RTC.UnitTests.Datastructures;
 
 public class MatrixUnitTests
 {
+    public static IEnumerable<object[]> ShearingMatrixTestData =>
+    [
+        [Matrix.ShearingMatrix(1, 0, 0, 0, 0, 0), Vec4.Point(2, 3, 4), Vec4.Point(5, 3, 4)],
+        [Matrix.ShearingMatrix(0, 1, 0, 0, 0, 0), Vec4.Point(2, 3, 4), Vec4.Point(6, 3, 4)],
+        [Matrix.ShearingMatrix(0, 0, 1, 0, 0, 0), Vec4.Point(2, 3, 4), Vec4.Point(2, 5, 4)],
+        [Matrix.ShearingMatrix(0, 0, 0, 1, 0, 0), Vec4.Point(2, 3, 4), Vec4.Point(2, 7, 4)],
+        [Matrix.ShearingMatrix(0, 0, 0, 0, 1, 0), Vec4.Point(2, 3, 4), Vec4.Point(2, 3, 6)],
+        [Matrix.ShearingMatrix(0, 0, 0, 0, 0, 1), Vec4.Point(2, 3, 4), Vec4.Point(2, 3, 7)],
+    ];
+    
+    public static IEnumerable<object[]> ScalingMatrixTestData =>
+    [
+        [Matrix.ScalingMatrix(2, 3, 4), Vec4.Point(-4, 6, 8), Vec4.Point(-8, 18, 32)],
+        [Matrix.ScalingMatrix(2, 3, 4), Vec4.Vector(-4, 6, 8), Vec4.Vector(-8, 18, 32)],
+        [Matrix.ScalingMatrix(-1, 1, 1), Vec4.Point(2, 3, 4), Vec4.Point(-2, 3, 4)],
+        [Matrix.ScalingMatrix(2, 3, 4).Inverse(), Vec4.Point(-4, 6, 8), Vec4.Point(-2, 2, 2)],
+    ];
+
+    public static IEnumerable<object[]> TranslationMatrixTestData =>
+    [
+        [Matrix.TranslationMatrix(5, -3, 2), Vec4.Point(-3, 4, 5), Vec4.Point(2, 1, 7)],
+        [Matrix.TranslationMatrix(5, -3, 2), Vec4.Vector(-3, 4, 5), Vec4.Vector(-3, 4, 5)],
+        [Matrix.TranslationMatrix(5, -3, 2).Inverse(), Vec4.Point(-3, 4, 5), Vec4.Point(-8, 7, 3)],
+    ];
+
+    public static IEnumerable<object[]> InverseMatrixTestData =>
+    [
+        [
+            new Matrix(new double[,] { { 9, 3, 0, 9 }, { -5, -2, -6, -3 }, { -4, 9, 6, 4 }, { -7, 6, 6, 2 } }), 
+            new Matrix(new[,]
+            {
+                { -0.04074d, -0.07778d, 0.14444d, -0.22222d },
+                { -0.07778d, 0.03333d, 0.36667d, -0.33333d },
+                { -0.02901d, -0.14630d, -0.10926d, 0.12963d },
+                { 0.17778d, 0.06667d, -0.26667d, 0.33333d }
+            })
+        ],
+        [
+            new Matrix(new double[,] { { 8, -5, 9, 2 }, { 7, 5, 6, 1 }, { -6, 0, 9, 6 }, { -3, 0, -9, -4 } }),
+            new Matrix(new[,]
+            {
+                { -0.15385d, -0.15385d, -0.28205d, -0.53846d },
+                { -0.07692d, 0.12308d, 0.02564d, 0.03077d },
+                { 0.35897d, 0.35897d, 0.43590d, 0.92308d },
+                { -0.69231d, -0.69231d, -0.76923d, -1.92308d }
+            })
+        ],
+        [
+            new Matrix(new double[,] { { -5, 2, 6, -8 }, { 1, -5, 1, 8 }, { 7, 7, -6, -7 }, { 1, -3, 7, 4 } }),
+            new Matrix(new[,]
+            {
+            { 0.21805d, 0.45113d, 0.24060d, -0.04511d },
+            { -0.80827d, -1.45677d, -0.44361d, 0.52068d },
+            { -0.07895d, -0.22368d, -0.05263d, 0.19737d },
+            { -0.52256d, -0.81391d, -0.30075d, 0.30639d }
+            })
+        ]
+    ];
+   
     [Fact]
     public void TestMatrixEquality()
     {
@@ -149,54 +208,70 @@ public class MatrixUnitTests
         a.Invertible.ShouldBeFalse();
     }
 
-    [Fact]
-    public void TestInverseOfInvertibleMatrix()
+    [Theory]
+    [MemberData(nameof(InverseMatrixTestData))]
+    public void TestInverseOfInvertibleMatrix(Matrix a, Matrix expected)
     {
-        var a = new Matrix(new double[,] { { -5, 2, 6, -8 }, { 1, -5, 1, 8 }, { 7, 7, -6, -7 }, { 1, -3, 7, 4 } });
-        var b = a.Inverse();
-        a.Determinant().ShouldBe(532);
-        a.Cofactor(2, 3).ShouldBe(-160);
-        b.Get(3, 2).ShouldBe(-160d / 532d);
-        a.Cofactor(3, 2).ShouldBe(105);
-        b.Get(2, 3).ShouldBe(105d / 532d);
+        a.Inverse().ShouldBe(expected);
+    }
+    
+    [Theory]
+    [MemberData(nameof(TranslationMatrixTestData))]
+    public void TestTranslationMatrixMultiplication(Matrix m, Vec4 p, Vec4 expected)
+    {
+        (m * p).ShouldBe(expected);
+    }
 
-        var expectedB = new Matrix(new[,]
-        {
-            { 0.21805d, 0.45113d, 0.24060d, -0.04511d },
-            { -0.80827d, -1.45677d, -0.44361d, 0.52068d },
-            { -0.07895d, -0.22368d, -0.05263d, 0.19737d },
-            { -0.52256d, -0.81391d, -0.30075d, 0.30639d }
-        });
-        b.ShouldBe(expectedB);
+    [Theory]
+    [MemberData(nameof(ScalingMatrixTestData))]
+    public void TestScalingMatrixMultiplication(Matrix m, Vec4 p, Vec4 expected)
+    {
+        (m * p).ShouldBe(expected);
+    }
+    
+    [Fact]
+    public void TestRotationXMatrix()
+    {
+        var p = Vec4.Point(0, 1, 0);
+        var halfQuarter = Matrix.RotationXMatrix(Math.PI / 4);
+        (halfQuarter.Inverse() * p).ShouldBe(Vec4.Point(0, Math.Sqrt(2) / 2, -Math.Sqrt(2) / 2));
+    }
+    
+    [Fact]
+    public void TestRotationYMatrix()
+    {
+        var p = Vec4.Point(0, 0, 1);
+        var halfQuarter = Matrix.RotationYMatrix(Math.PI / 4);
+        var fullQuarter = Matrix.RotationYMatrix(Math.PI / 2);
+        (halfQuarter * p).ShouldBe(Vec4.Point(Math.Sqrt(2) / 2, 0, Math.Sqrt(2) / 2));
+        (fullQuarter * p).ShouldBe(Vec4.Point(1, 0, 0));
+    }
+    
+    [Fact]
+    public void TestRotationZMatrix()
+    {
+        var p = Vec4.Point(0, 1, 0);
+        var halfQuarter = Matrix.RotationZMatrix(Math.PI / 4);
+        var fullQuarter = Matrix.RotationZMatrix(Math.PI / 2);
+        (halfQuarter * p).ShouldBe(Vec4.Point(-Math.Sqrt(2) / 2, Math.Sqrt(2) / 2, 0));
+        (fullQuarter * p).ShouldBe(Vec4.Point(-1, 0, 0));
+    }
+    
+    [Theory]
+    [MemberData(nameof(ShearingMatrixTestData))]
+    public void TestShearingMatrixMultiplication(Matrix m, Vec4 p, Vec4 expected)
+    {
+        (m * p).ShouldBe(expected);
     }
 
     [Fact]
-    public void TestInverseOfInvertibleMatrix2()
+    public void TestChainingMatrixTransformations()
     {
-        var a = new Matrix(new double[,] { { 8, -5, 9, 2 }, { 7, 5, 6, 1 }, { -6, 0, 9, 6 }, { -3, 0, -9, -4 } });
-        var b = a.Inverse();
-        var expectedB = new Matrix(new[,]
-        {
-            { -0.15385d, -0.15385d, -0.28205d, -0.53846d },
-            { -0.07692d, 0.12308d, 0.02564d, 0.03077d },
-            { 0.35897d, 0.35897d, 0.43590d, 0.92308d },
-            { -0.69231d, -0.69231d, -0.76923d, -1.92308d }
-        });
-        b.ShouldBe(expectedB);
-    }
-
-    [Fact]
-    public void TestInverseOfInvertibleMatrix3()
-    {
-        var a = new Matrix(new double[,] { { 9, 3, 0, 9 }, { -5, -2, -6, -3 }, { -4, 9, 6, 4 }, { -7, 6, 6, 2 } });
-        var b = a.Inverse();
-        var expectedB = new Matrix(new[,]
-        {
-            { -0.04074d, -0.07778d, 0.14444d, -0.22222d },
-            { -0.07778d, 0.03333d, 0.36667d, -0.33333d },
-            { -0.02901d, -0.14630d, -0.10926d, 0.12963d },
-            { 0.17778d, 0.06667d, -0.26667d, 0.33333d }
-        });
-        b.ShouldBe(expectedB);
+        var p = Vec4.Point(1, 0, 1);
+        var transformation = Matrix.IdentityMatrix(4)
+            .Translate(10, 5, 7)
+            .Scale(5, 5, 5)
+            .RotateX(Math.PI / 2);
+        (transformation * p).ShouldBe(Vec4.Point(15, 0, 7));
     }
 }

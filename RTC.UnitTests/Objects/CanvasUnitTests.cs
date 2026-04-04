@@ -55,7 +55,7 @@ public class CanvasUnitTests
         var canvas = new Canvas(0, 0);
         canvas.SetCanvas(pixels);
 
-        var ppmStrings = canvas.ToPpm().Split('\n', StringSplitOptions.RemoveEmptyEntries);
+        var ppmStrings = canvas.ToPpm().Split(System.Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
         ppmStrings.Length.ShouldBe(expected.Count);
         for (var i = 0; i < expected.Count; i++) ppmStrings[i].ShouldBe(expected[i]);
     }

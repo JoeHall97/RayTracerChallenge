@@ -5,7 +5,7 @@ using Environment = RTC.Console.Exercises.Structs.Environment;
 
 namespace RTC.Console.Exercises;
 
-public class ChapterTwo : IChapterExercise
+public class Chapter2 : IChapterExercise
 {
     public void Run()
     {

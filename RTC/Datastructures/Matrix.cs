@@ -3,23 +3,43 @@ using RTC.Helpers;
 
 namespace RTC.Datastructures;
 
-public class Matrix
+/// <summary>
+/// A Matrix of doubles.
+/// </summary>
+public partial class Matrix
 {
+    /// <summary>
+    /// Creates a new matrix of the given size.
+    /// </summary>
+    /// <param name="size">The size of the matrix. Defaults to 4.</param>
     public Matrix(uint size = 4)
     {
         Values = new double[size, size];
     }
 
+    /// <summary>
+    /// Creates a new matrix from the given values.
+    /// </summary>
+    /// <param name="values"></param>
     public Matrix(double[,] values)
     {
         Values = values;
     }
 
-    private double[,] Values { get; }
-
+    /// <summary>
+    /// The size of the matrix.
+    /// </summary>
     public uint Size => (uint)Values.GetLength(0);
 
+    /// <summary>
+    /// Whether the matrix is invertible or not.
+    /// </summary>
     public bool Invertible => Determinant() != 0;
+
+    /// <summary>
+    /// The values of the matrix.
+    /// </summary>
+    private double[,] Values { get; }
 
     private bool Equals(Matrix other)
     {
@@ -106,16 +126,32 @@ public class Matrix
         return !(lhs == rhs);
     }
 
+    /// <summary>
+    /// Sets the value of the matrix at the given row and column. Will throw an exception if the row or column is out of bounds.
+    /// </summary>
+    /// <param name="row">The row index of the matrix.</param>
+    /// <param name="column">The column index of the matrix.</param>
+    /// <param name="value">The value to set at the specified position.</param>
     public void Set(uint row, uint column, double value)
     {
         Values[row, column] = value;
     }
 
+    /// <summary>
+    /// Gets the value of the matrix at the given row and column. Will throw an exception if the row or column is out of bounds.
+    /// </summary>
+    /// <param name="row">The row index of the matrix.</param>
+    /// <param name="column">The column index of the matrix.</param>
+    /// <returns>The value at the specified position.</returns>
     public double Get(uint row, uint column)
     {
         return Values[row, column];
     }
 
+    /// <summary>
+    /// Gets the transpose of the matrix.
+    /// </summary>
+    /// <returns>The transpose of the matrix.</returns>
     public Matrix Transpose()
     {
         var transposed = new Matrix(Size);
@@ -126,6 +162,11 @@ public class Matrix
         return transposed;
     }
 
+    /// <summary>
+    /// Gets the determinant of the matrix.
+    /// </summary>
+    /// <returns>The determinant of the matrix.</returns>
+    /// <exception cref="ArgumentException">Throws if the size of the Matrix is less than 2.</exception>
     public double Determinant()
     {
         if (Size < 2) throw new ArgumentException("Matrix must have at least 2 rows and columns.");
@@ -138,6 +179,13 @@ public class Matrix
         return determinant;
     }
 
+    /// <summary>
+    /// Gets the given submatrix of the matrix.
+    /// </summary>
+    /// <param name="row">The row to exclude.</param>
+    /// <param name="column">The column to exclude.</param>
+    /// <returns>The submatrix.</returns>
+    /// <exception cref="ArgumentException">Throws if the size of the Matrix is less than 2.</exception>
     public Matrix SubMatrix(uint row, uint column)
     {
         if (Size <= 1) throw new ArgumentException("Matrix too small to subdivide.");
@@ -156,16 +204,33 @@ public class Matrix
         return res;
     }
 
+    /// <summary>
+    /// Gets the minor of the matrix.
+    /// </summary>
+    /// <param name="row"></param>
+    /// <param name="column"></param>
+    /// <returns>The minor value.</returns>
     public double Minor(uint row, uint column)
     {
         return SubMatrix(row, column).Determinant();
     }
 
+    /// <summary>
+    /// Gets the cofactor of the matrix.
+    /// </summary>
+    /// <param name="row"></param>
+    /// <param name="column"></param>
+    /// <returns>The cofactor value.</returns>
     public double Cofactor(uint row, uint column)
     {
         return (row + column) % 2 == 0 ? Minor(row, column) : -Minor(row, column);
     }
 
+    /// <summary>
+    /// Gets the inverse of the matrix.
+    /// </summary>
+    /// <returns>The inverse matrix.</returns>
+    /// <exception cref="ArgumentException">Throws if the matrix is not invertible.</exception>
     public Matrix Inverse()
     {
         if (!Invertible) throw new ArgumentException("Matrix is not invertible.");
@@ -178,17 +243,88 @@ public class Matrix
 
         return res;
     }
-
-    public static Matrix IdentityMatrix(uint size)
+    
+    /// <summary>
+    /// Rotates the matrix around the x-axis.
+    /// </summary>
+    /// <param name="r">The rotation angle in radians.</param>
+    /// <returns>The rotated matrix.</returns>
+    public Matrix RotateX(double r)
     {
-        var identity = new Matrix(size);
-        for (uint i = 0; i < size; i++) identity.Set(i, i, 1);
-        return identity;
+        return this * RotationXMatrix(r);
     }
 
+    /// <summary>
+    /// Rotates the matrix around the y-axis.
+    /// </summary>
+    /// <param name="r">The rotation angle in radians.</param>
+    /// <returns>The rotated matrix.</returns>
+    public Matrix RotateY(double r)
+    {
+        return this * RotationYMatrix(r);
+    }
+
+    /// <summary>
+    /// Rotates the matrix around the z-axis.
+    /// </summary>
+    /// <param name="r">The rotation angle in radians.</param>
+    /// <returns>The rotated matrix.</returns>
+    public Matrix RotateZ(double r)
+    {
+        return this * RotationZMatrix(r);
+    }
+
+    /// <summary>
+    /// Scales the matrix.
+    /// </summary>
+    /// <param name="x">The scaling factor for the x-axis.</param>
+    /// <param name="y">The scaling factor for the y-axis.</param>
+    /// <param name="z">The scaling factor for the z-axis.</param>
+    /// <returns>The scaled matrix.</returns>
+    public Matrix Scale(double x, double y, double z)
+    {
+        return this * ScalingMatrix(x, y, z);
+    }
+
+    /// <summary>
+    /// Translates the matrix.
+    /// </summary>
+    /// <param name="x">The translation amount along the x-axis.</param>
+    /// <param name="y">The translation amount along the y-axis.</param>
+    /// <param name="z">The translation amount along the z-axis.</param>
+    /// <returns>The translated matrix.</returns>
+    public Matrix Translate(double x, double y, double z)
+    {
+        return this * TranslationMatrix(x, y, z);
+    }
+
+    /// <summary>
+    /// Shears the matrix.
+    /// </summary>
+    /// <param name="xy">Shearing factor for the xy plane.</param>
+    /// <param name="xz">Shearing factor for the xz plane.</param>
+    /// <param name="yx">Shearing factor for the yx plane.</param>
+    /// <param name="yz">Shearing factor for the yz plane.</param>
+    /// <param name="zx">Shearing factor for the zx plane.</param>
+    /// <param name="zy">Shearing factor for the zy plane.</param>
+    /// <returns>The sheared matrix.</returns>
+    public Matrix Shear(double xy, double xz, double yx, double yz, double zx, double zy)
+    {
+        return this * ShearingMatrix(xy, xz, yx, yz, zx, zy);
+    }
+
+    /// <summary>
+    /// Multiples the row of the left matrix with the column of the right matrix.
+    /// </summary>
+    /// <param name="lhs">The left matrix.</param>
+    /// <param name="rhs">The right matrix.</param>
+    /// <param name="row">The row of the left matrix.</param>
+    /// <param name="column">The column of the right matrix.</param>
+    /// <returns>The result of the multiplication.</returns>
+    /// <exception cref="ArgumentException">Thrown if the matrices are different sizes.</exception>
     private static double MultipleRowColumn(Matrix lhs, Matrix rhs, uint row, uint column)
     {
-        if (lhs.Values.Rank != rhs.Values.Rank) throw new ArgumentException("Matrices must be multiplicable.");
+        if (lhs.Size != rhs.Size) throw new ArgumentException("Matrices must be the same size.");
 
         double res = 0;
         for (uint i = 0; i < lhs.Size; i++) res += lhs.Get(row, i) * rhs.Get(i, column);

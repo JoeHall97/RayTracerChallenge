@@ -1,5 +1,11 @@
 namespace RTC.Objects;
 
+/// <summary>
+/// A colour consisting of red, green, and blue values.
+/// </summary>
+/// <param name="red"></param>
+/// <param name="green"></param>
+/// <param name="blue"></param>
 public struct Colour(float red, float green, float blue)
 {
     public float Red { get; set; } = red;
