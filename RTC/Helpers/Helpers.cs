@@ -16,4 +16,16 @@ public static class Helpers
         const float epsilon = 0.00001f;
         return Math.Abs(x - y) < epsilon;
     }
+    
+    /// <summary>
+    /// Checks if two floats are equal, with a tolerance of 0.00001.
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <returns><c>true</c> if the two floats are equal, else <c>false</c></returns>
+    public static bool IsEqual(this float x, float y)
+    {
+        const float epsilon = 0.00001f;
+        return Math.Abs(x - y) < epsilon;
+    }
 }
