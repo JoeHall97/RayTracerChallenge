@@ -6,7 +6,7 @@ namespace RTC.Datastructures;
 /// <summary>
 /// A Matrix of doubles.
 /// </summary>
-public partial class Matrix
+public partial struct Matrix : IEquatable<Matrix>
 {
     /// <summary>
     /// Creates a new matrix of the given size.
@@ -41,7 +41,7 @@ public partial class Matrix
     /// </summary>
     private double[,] Values { get; }
 
-    private bool Equals(Matrix other)
+    public bool Equals(Matrix other)
     {
         return this == other;
     }
@@ -69,7 +69,6 @@ public partial class Matrix
     public override bool Equals(object? obj)
     {
         if (obj is null) return false;
-        if (ReferenceEquals(this, obj)) return true;
         if (obj.GetType() != GetType()) return false;
         return Equals((Matrix)obj);
     }

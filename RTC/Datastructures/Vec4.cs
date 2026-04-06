@@ -132,4 +132,14 @@ public struct Vec4(double x, double y, double z, double w) : IEquatable<Vec4>
     {
         return Vector(Y * other.Z - Z * other.Y, Z * other.X - X * other.Z, X * other.Y - Y * other.X);
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="normal"></param>
+    /// <returns></returns>
+    public Vec4 Reflect(Vec4 normal)
+    {
+        return this - normal * 2 * Dot(normal);
+    }
 }

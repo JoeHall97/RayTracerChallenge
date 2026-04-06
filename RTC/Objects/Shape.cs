@@ -5,4 +5,5 @@ namespace RTC.Objects;
 public abstract class Shape
 {
     public Matrix Transformation { get; set; } = Matrix.IdentityMatrix(4);
+    public Material Material { get; set; } = new();
 }

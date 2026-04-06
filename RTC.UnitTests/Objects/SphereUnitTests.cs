@@ -17,7 +17,7 @@ public class SphereUnitTests
         // a ray intersects a sphere at a tangent
         [
             new Ray(Vec4.Point(0, 1, -5), Vec4.Vector(0, 0, 1)),
-            new [] { 5.0d, 5.0d },
+            new [] { 5.0d },
             Matrix.IdentityMatrix(4)
         ],
         // a ray misses a sphere
@@ -52,6 +52,22 @@ public class SphereUnitTests
         ],
     ];
 
+    public static IEnumerable<object[]> SphereNormalTestData =>
+    [
+        // The normal on a sphere at a point on the x-axis
+        [Vec4.Point(1, 0, 0), Vec4.Vector(1, 0, 0), Matrix.IdentityMatrix(4)],
+        // The normal on a sphere at a point on the y-axis
+        [Vec4.Point(0, 1, 0), Vec4.Vector(0, 1, 0), Matrix.IdentityMatrix(4)],
+        // The normal on a sphere at a point on the z-axis
+        [Vec4.Point(0, 0, 1), Vec4.Vector(0, 0, 1), Matrix.IdentityMatrix(4)],
+        // The normal on a sphere at a non-axial point
+        [Vec4.Point(Math.Sqrt(3) / 3, Math.Sqrt(3) / 3, Math.Sqrt(3) / 3), Vec4.Vector(Math.Sqrt(3) / 3, Math.Sqrt(3) / 3, Math.Sqrt(3) / 3), Matrix.IdentityMatrix(4)],
+        // Computing the normal on a translated sphere
+        [Vec4.Point(0, 1.70711d, -0.70711d), Vec4.Vector(0, 0.70711d, -0.70711d), Matrix.TranslationMatrix(0, 1, 0)],
+        // Computing the normal on a transformed sphere
+        [Vec4.Point(0, Math.Sqrt(2) / 2, -Math.Sqrt(2) / 2), Vec4.Vector(0, 0.97014d, -0.24254d), Matrix.ScalingMatrix(1, 0.5d, 1) * Matrix.RotationZMatrix(Math.PI / 5)]
+    ];
+    
     [Theory]
     [MemberData(nameof(SphereIntersectTestData))]
     public void TestSphereIntersections(Ray r, double[] intersections, Matrix transformation)
@@ -59,11 +75,27 @@ public class SphereUnitTests
         var s = new Sphere(transformation);
         var xs = s.Intersect(r);
         
-        xs.Length.ShouldBe(intersections.Length);
-        for (var i = 0; i < xs.Length; i++)
+        xs.Values.Count.ShouldBe(intersections.Length);
+        for (var i = 0; i < xs.Values.Count; i++)
         {
-            xs[i].T.ShouldBe(intersections[i]);
-            xs[i].Shape.ShouldBe(s);
+            xs.Values.ElementAt(i).T.ShouldBe(intersections[i]);
+            xs.Values.ElementAt(i).Shape.ShouldBe(s);
         }
+    }
+    
+    [Theory]
+    [MemberData(nameof(SphereNormalTestData))]
+    public void TestSphereNormal(Vec4 p, Vec4 expected, Matrix transformation)
+    {
+        var s = new Sphere(transformation);
+        s.NormalAt(p).ShouldBe(expected);
+    }
+    
+    [Fact]
+    public void TestNormalIsANormalizedVector()
+    {
+        var s = new Sphere();
+        var n = s.NormalAt(Vec4.Point(Math.Sqrt(3) / 3, Math.Sqrt(3) / 3, Math.Sqrt(3) / 3));
+        n.ShouldBe(n.Normalised);
     }
 }

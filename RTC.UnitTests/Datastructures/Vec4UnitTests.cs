@@ -6,6 +6,14 @@ namespace RTC.UnitTests.Datastructures;
 
 public class Vec4UnitTests
 {
+    public static IEnumerable<object[]> ReflectionTestData =>
+    [
+        // Reflecting a vector approaching at 45 degrees
+        [Vec4.Vector(1, -1, 0), Vec4.Vector(0, 1, 0), Vec4.Vector(1, 1, 0)],
+        // Reflecting a vector off a slanted surface
+        [Vec4.Vector(0, -1, 0), Vec4.Vector(Math.Sqrt(2) / 2, Math.Sqrt(2) / 2, 0), Vec4.Vector(1, 0, 0)]
+    ];
+    
     public static IEnumerable<object[]> MagnitudeTestData =>
     [
         [Vec4.Vector(1, 0, 0), 1d],
@@ -57,5 +65,12 @@ public class Vec4UnitTests
         var b = Vec4.Vector(2, 3, 4);
         a.Cross(b).ShouldBe(Vec4.Vector(-1, 2, -1));
         b.Cross(a).ShouldBe(Vec4.Vector(1, -2, 1));
+    }
+    
+    [Theory]
+    [MemberData(nameof(ReflectionTestData))]
+    public void TestReflectionOfVector(Vec4 v, Vec4 n, Vec4 expected)
+    {
+        v.Reflect(n).ShouldBe(expected);
     }
 }

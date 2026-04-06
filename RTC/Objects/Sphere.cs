@@ -22,12 +22,12 @@ public class Sphere(Vec4 origin, float radius) : Shape
     /// <summary>
     /// The origin/position of the sphere.
     /// </summary>
-    public Vec4 Origin { get; init; } = origin;
+    private Vec4 Origin { get; } = origin;
 
     /// <summary>
     /// The radius of the sphere.
     /// </summary>
-    public float Radius { get; init; } = radius;
+    private float Radius { get; } = radius;
 
     public override string ToString() => $"Sphere(origin: {Origin}, radius: {Radius})";
     
@@ -36,20 +36,34 @@ public class Sphere(Vec4 origin, float radius) : Shape
     /// </summary>
     /// <param name="ray">The ray that is intersecting the sphere.</param>
     /// <returns>The intersection points of the ray with the sphere, if any.</returns>
-    public Intersection[] Intersect(Ray ray)
+    public IntersectionSet Intersect(Ray ray)
     {
         var transformedRay = ray.Transform(Transformation.Inverse());
-        var sphereToRay = transformedRay.Origin - Vec4.Point(0, 0, 0);
+        var sphereToRay = transformedRay.Origin - Origin;
         
         var a = transformedRay.Direction.Dot(transformedRay.Direction);
         var b = 2 * transformedRay.Direction.Dot(sphereToRay);
-        var c = sphereToRay.Dot(sphereToRay) - 1;
+        var c = sphereToRay.Dot(sphereToRay) - Radius;
         
         var discriminant = (b * b) - (4 * a * c);
-        if (discriminant < 0) return [];
+        if (discriminant < 0) return new IntersectionSet();
         
         var t1 = (-b - Math.Sqrt(discriminant)) / (2 * a);
         var t2 = (-b + Math.Sqrt(discriminant)) / (2 * a);
-        return [ new Intersection(this, t1), new Intersection(this, t2) ];
+        return new IntersectionSet(new Intersection(this, t1), new Intersection(this, t2));
+    }
+
+    /// <summary>
+    /// Calculates the normal at the given world point.
+    /// </summary>
+    /// <param name="worldPoint">The world point at which to calculate the normal.</param>
+    /// <returns>The normal vector at the given world point.</returns>
+    public Vec4 NormalAt(Vec4 worldPoint)
+    {
+        var objectPoint = Transformation.Inverse() * worldPoint;
+        var objectNormal = objectPoint - Origin;
+        var worldNormal = Transformation.Inverse().Transpose() * objectNormal;
+        worldNormal.W = 0;
+        return worldNormal.Normalised;
     }
 }

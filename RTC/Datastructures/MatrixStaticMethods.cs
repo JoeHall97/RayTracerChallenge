@@ -1,6 +1,6 @@
 ﻿namespace RTC.Datastructures;
 
-public partial class Matrix
+public partial struct Matrix
 {
     /// <summary>
     /// Creates an identity matrix of the given size.

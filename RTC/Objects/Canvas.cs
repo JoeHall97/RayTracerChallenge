@@ -125,7 +125,7 @@ public class Canvas(int width, int height)
     /// <param name="colourValue">The colour value to convert to PPM format.</param>
     /// <param name="currentWidth">The current width of the PPM string.</param>
     /// <returns>The PPM string representation of the colour value.</returns>
-    private static string GetPixelPpmValue(float colourValue, ref int currentWidth)
+    private static string GetPixelPpmValue(double colourValue, ref int currentWidth)
     {
         var value = Math.Max(0, Math.Min(255, Math.Round(colourValue * 255)));
         var stringDigitCount = value == 0 ? 1 : (int)Math.Log10(value) + 1;
