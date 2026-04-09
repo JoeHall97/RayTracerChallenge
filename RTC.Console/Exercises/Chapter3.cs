@@ -1,5 +1,6 @@
 ﻿using RTC.Datastructures;
 using RTC.Objects;
+using RTC.Primitives;
 
 namespace RTC.Console.Exercises;
 

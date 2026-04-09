@@ -1,9 +1,9 @@
-﻿using RTC.Datastructures;
-using RTC.Helpers;
+﻿using RTC.Helpers;
 using RTC.Objects;
+using RTC.Primitives;
 using Shouldly;
 
-namespace RTC.UnitTests.Datastructures;
+namespace RTC.UnitTests.Primitives;
 
 public class IntersectionSetUnitTests
 {
@@ -42,6 +42,6 @@ public class IntersectionSetUnitTests
             intersections.Values.Add(intersection);
         }
         
-        intersections.Hit.ShouldBe(expectedIntersection);
+        intersections.Hit().ShouldBe(expectedIntersection);
     }
 }

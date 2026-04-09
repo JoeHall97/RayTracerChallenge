@@ -29,10 +29,6 @@ public struct Vec4(double x, double y, double z, double w) : IEquatable<Vec4>
     /// The magnitude of the tuple.
     /// </summary>
     public double Magnitude => MathF.Sqrt((float)(X * X + Y * Y + Z * Z + W * W));
-    /// <summary>
-    /// The normalised version of the tuple.
-    /// </summary>
-    public Vec4 Normalised => new(X / Magnitude, Y / Magnitude, Z / Magnitude, W / Magnitude);
 
     public static Vec4 operator -(Vec4 lhs)
     {
@@ -142,4 +138,9 @@ public struct Vec4(double x, double y, double z, double w) : IEquatable<Vec4>
     {
         return this - normal * 2 * Dot(normal);
     }
+    
+    /// <summary>
+    /// Returns the normalised version of the tuple.
+    /// </summary>
+    public Vec4 Normalise() => new(X / Magnitude, Y / Magnitude, Z / Magnitude, W / Magnitude);
 }

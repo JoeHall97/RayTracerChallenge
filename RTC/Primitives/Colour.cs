@@ -1,6 +1,6 @@
 using RTC.Helpers;
 
-namespace RTC.Objects;
+namespace RTC.Primitives;
 
 /// <summary>
 /// A colour consisting of red, green, and blue values.

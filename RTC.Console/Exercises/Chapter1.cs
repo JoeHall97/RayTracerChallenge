@@ -11,7 +11,7 @@ public class Chapter1 : IChapterExercise
         var p = new Projectile
         {
             Position = Vec4.Point(0, 1, 0),
-            Velocity = Vec4.Vector(1, 1, 0).Normalised
+            Velocity = Vec4.Vector(1, 1, 0).Normalise()
         };
         var e = new Environment
         {

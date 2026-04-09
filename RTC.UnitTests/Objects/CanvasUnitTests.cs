@@ -1,4 +1,5 @@
 using RTC.Objects;
+using RTC.Primitives;
 using Shouldly;
 
 namespace RTC.UnitTests.Objects;

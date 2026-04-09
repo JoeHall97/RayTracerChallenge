@@ -1,6 +1,7 @@
 using RTC.Console.Exercises.Structs;
 using RTC.Datastructures;
 using RTC.Objects;
+using RTC.Primitives;
 using Environment = RTC.Console.Exercises.Structs.Environment;
 
 namespace RTC.Console.Exercises;
@@ -12,7 +13,7 @@ public class Chapter2 : IChapterExercise
         var proj = new Projectile
         {
             Position = Vec4.Point(0, 1, 0),
-            Velocity = Vec4.Vector(1, 1.8, 0).Normalised * 10.8
+            Velocity = Vec4.Vector(1, 1.8, 0).Normalise() * 10.8
         };
         var env = new Environment
         {

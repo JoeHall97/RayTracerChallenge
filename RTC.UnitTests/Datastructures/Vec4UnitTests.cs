@@ -40,14 +40,14 @@ public class Vec4UnitTests
     [MemberData(nameof(NormalizeTestData))]
     public void TestNormalize(Vec4 vec, Vec4 expected)
     {
-        vec.Normalised.ShouldBe(expected);
+        vec.Normalise().ShouldBe(expected);
     }
 
     [Fact]
     public void TestMagnitudeOfNormalisedVector()
     {
         var vec = Vec4.Vector(1, 2, 3);
-        vec.Normalised.Magnitude.IsEqual(1).ShouldBeTrue();
+        vec.Normalise().Magnitude.IsEqual(1).ShouldBeTrue();
     }
 
     [Fact]

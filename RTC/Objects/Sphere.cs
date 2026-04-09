@@ -1,4 +1,5 @@
 ﻿using RTC.Datastructures;
+using RTC.Primitives;
 
 namespace RTC.Objects;
 
@@ -31,39 +32,28 @@ public class Sphere(Vec4 origin, float radius) : Shape
 
     public override string ToString() => $"Sphere(origin: {Origin}, radius: {Radius})";
     
-    /// <summary>
-    /// Calculate the intersections of the given ray with the sphere.
-    /// </summary>
-    /// <param name="ray">The ray that is intersecting the sphere.</param>
-    /// <returns>The intersection points of the ray with the sphere, if any.</returns>
-    public IntersectionSet Intersect(Ray ray)
+    protected override Intersection[] LocalIntersect(Ray localRay)
     {
-        var transformedRay = ray.Transform(Transformation.Inverse());
-        var sphereToRay = transformedRay.Origin - Origin;
+        var sphereToRay = localRay.Origin - Origin;
         
-        var a = transformedRay.Direction.Dot(transformedRay.Direction);
-        var b = 2 * transformedRay.Direction.Dot(sphereToRay);
+        var a = localRay.Direction.Dot(localRay.Direction);
+        var b = 2 * localRay.Direction.Dot(sphereToRay);
         var c = sphereToRay.Dot(sphereToRay) - Radius;
         
         var discriminant = (b * b) - (4 * a * c);
-        if (discriminant < 0) return new IntersectionSet();
+        if (discriminant < 0) return [];
         
         var t1 = (-b - Math.Sqrt(discriminant)) / (2 * a);
         var t2 = (-b + Math.Sqrt(discriminant)) / (2 * a);
-        return new IntersectionSet(new Intersection(this, t1), new Intersection(this, t2));
+        return [new Intersection(this, t1), new Intersection(this, t2)];
     }
-
-    /// <summary>
-    /// Calculates the normal at the given world point.
-    /// </summary>
-    /// <param name="worldPoint">The world point at which to calculate the normal.</param>
-    /// <returns>The normal vector at the given world point.</returns>
-    public Vec4 NormalAt(Vec4 worldPoint)
+    
+    public override Vec4 NormalAt(Vec4 worldPoint)
     {
         var objectPoint = Transformation.Inverse() * worldPoint;
         var objectNormal = objectPoint - Origin;
         var worldNormal = Transformation.Inverse().Transpose() * objectNormal;
         worldNormal.W = 0;
-        return worldNormal.Normalised;
+        return worldNormal.Normalise();
     }
 }

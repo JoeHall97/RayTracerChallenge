@@ -119,4 +119,30 @@ public partial struct Matrix
             }
         );
     }
+
+    /// <summary>
+    /// Creates a 4x4 matrix that transforms the world relative to your eye.
+    /// </summary>
+    /// <param name="from">Where you want your eye to be in the scene.</param>
+    /// <param name="to">The point in the scene you want to look at.</param>
+    /// <param name="up">The vector indicating which direction is up.</param>
+    /// <returns>The created view transformation matrix.</returns>
+    public static Matrix ViewTransform(Vec4 from, Vec4 to, Vec4 up)
+    {
+        var forward = (to - from).Normalise();
+        var upNormal = up.Normalise();
+        var left = forward.Cross(upNormal);
+        var trueUp = left.Cross(forward);
+        
+        var orientation = new Matrix(new[,]
+            {
+                { left.X, left.Y, left.Z, 0 },
+                { trueUp.X, trueUp.Y, trueUp.Z, 0 },
+                { -forward.X, -forward.Y, -forward.Z, 0 },
+                { 0, 0, 0, 1 }
+            }
+        );
+        
+        return orientation * TranslationMatrix(-from.X, -from.Y, -from.Z);
+    }
 }

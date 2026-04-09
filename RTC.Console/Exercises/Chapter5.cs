@@ -1,5 +1,6 @@
 ﻿using RTC.Datastructures;
 using RTC.Objects;
+using RTC.Primitives;
 
 namespace RTC.Console.Exercises;
 
@@ -25,10 +26,10 @@ public class Chapter5 : IChapterExercise
                 var wallZ = 10.0d;
                 var worldX = -halfWallSize + pixelSize * x;
                 var position = Vec4.Point(worldX, worldY, wallZ);
-                var ray = new Ray(rayOrigin, (position - rayOrigin).Normalised);
+                var ray = new Ray(rayOrigin, (position - rayOrigin).Normalise());
                 
                 var xs = shape.Intersect(ray);
-                if (xs.Values.Count > 0)
+                if (xs.Length > 0)
                 {
                     canvas.WritePixel(x, y, green);
                 }

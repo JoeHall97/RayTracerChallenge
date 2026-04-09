@@ -1,3 +1,5 @@
+using RTC.Primitives;
+
 namespace RTC.Helpers;
 
 /// <summary>
@@ -28,4 +30,17 @@ public static class Helpers
         const float epsilon = 0.00001f;
         return Math.Abs(x - y) < epsilon;
     }
+
+    /// <summary>
+    /// Returns the hit intersection.
+    /// </summary>
+    /// <param name="intersections"></param>
+    /// <returns></returns>
+    public static Intersection? Hit(this Intersection[] intersections)
+    {
+        if (intersections.Length == 0) return null;
+        if (intersections[0].T > 0) return intersections[0];
+        if (intersections.Length < 1 || intersections[1].T < 0) return null;
+        return intersections[1];
+    } 
 }

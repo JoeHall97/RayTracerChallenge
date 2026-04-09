@@ -17,7 +17,7 @@ public class SphereUnitTests
         // a ray intersects a sphere at a tangent
         [
             new Ray(Vec4.Point(0, 1, -5), Vec4.Vector(0, 0, 1)),
-            new [] { 5.0d },
+            new [] { 5.0d, 5.0d },
             Matrix.IdentityMatrix(4)
         ],
         // a ray misses a sphere
@@ -75,11 +75,11 @@ public class SphereUnitTests
         var s = new Sphere(transformation);
         var xs = s.Intersect(r);
         
-        xs.Values.Count.ShouldBe(intersections.Length);
-        for (var i = 0; i < xs.Values.Count; i++)
+        xs.Length.ShouldBe(intersections.Length);
+        for (var i = 0; i < xs.Length; i++)
         {
-            xs.Values.ElementAt(i).T.ShouldBe(intersections[i]);
-            xs.Values.ElementAt(i).Shape.ShouldBe(s);
+            xs[i].T.ShouldBe(intersections[i]);
+            xs[i].Shape.ShouldBe(s);
         }
     }
     
@@ -96,6 +96,6 @@ public class SphereUnitTests
     {
         var s = new Sphere();
         var n = s.NormalAt(Vec4.Point(Math.Sqrt(3) / 3, Math.Sqrt(3) / 3, Math.Sqrt(3) / 3));
-        n.ShouldBe(n.Normalised);
+        n.ShouldBe(n.Normalise());
     }
 }

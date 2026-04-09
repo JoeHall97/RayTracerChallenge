@@ -1,5 +1,7 @@
 ﻿using RTC.Datastructures;
+using RTC.Helpers;
 using RTC.Objects;
+using RTC.Primitives;
 
 namespace RTC.Console.Exercises;
 
@@ -15,10 +17,7 @@ public class Chapter6 : IChapterExercise
         var rayOrigin = Vec4.Point(0, 0, -5);
         var shape = new Sphere
         {
-            Material =
-            {
-                Colour = new Colour(0.3d, 0.2d, 1.0d)
-            },
+            Material = new Material(new Colour(0.3d, 0.2d, 1.0d)),
             Transformation = Matrix.ScalingMatrix(1.3d, 1.4d, 1.0d)
         };
         var light = new PointLight(Colour.White, Vec4.Point(-10, 10, -10));
@@ -32,13 +31,13 @@ public class Chapter6 : IChapterExercise
                 const double wallZ = 10.0d;
                 var worldX = -halfWallSize + pixelSize * x;
                 var position = Vec4.Point(worldX, worldY, wallZ);
-                var ray = new Ray(rayOrigin, (position - rayOrigin).Normalised);
+                var ray = new Ray(rayOrigin, (position - rayOrigin).Normalise());
                 var xs = shape.Intersect(ray);
 
-                var hit = xs.Hit;
-                if (hit == null) continue;
+                var hit = xs.Hit();
+                if (hit is null) continue;
                 
-                var point = ray.Position(hit.T);
+                var point = ray.Position(hit.Value.T);
                 var normal = shape.NormalAt(point);
                 var eye = -ray.Direction;
                 var colour = shape.Material.Lighting(light, point, eye, normal);
