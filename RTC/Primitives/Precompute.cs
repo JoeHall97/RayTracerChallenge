@@ -1,5 +1,6 @@
 ﻿using RTC.Datastructures;
 using RTC.Objects;
+using RTC.Helpers;
 
 namespace RTC.Primitives;
 
@@ -25,6 +26,8 @@ public readonly struct Precompute
         {
             Inside = false;
         }
+        
+        OverPoint = Point + NormalVec * Helper.Epsilon;
     }
     
     /// <summary>
@@ -51,6 +54,10 @@ public readonly struct Precompute
     /// <c>true</c> if the intersection point is inside the shape, <c>false</c> otherwise.
     /// </summary>
     public bool Inside { get; }
+    /// <summary>
+    /// The vector from the intersection point to the point of reflection.
+    /// </summary>
+    public Vec4 OverPoint { get; }
     
     public override string ToString() => $"Precompute(t: {T}, shape: {Shape}, point: {Point}, eyeVec: {EyeVec}, normalVec: {NormalVec})";
 }

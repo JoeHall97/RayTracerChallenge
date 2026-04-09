@@ -5,8 +5,10 @@ namespace RTC.Helpers;
 /// <summary>
 /// Helper methods.
 /// </summary>
-public static class Helpers
+public static class Helper
 {
+    public const float Epsilon = 0.00001f;
+    
     /// <summary>
     /// Checks if two doubles are equal, with a tolerance of 0.00001.
     /// </summary>
@@ -15,8 +17,7 @@ public static class Helpers
     /// <returns><c>true</c> if the two doubles are equal, else <c>false</c></returns>
     public static bool IsEqual(this double x, double y)
     {
-        const float epsilon = 0.00001f;
-        return Math.Abs(x - y) < epsilon;
+        return Math.Abs(x - y) < Epsilon;
     }
     
     /// <summary>
@@ -27,8 +28,7 @@ public static class Helpers
     /// <returns><c>true</c> if the two floats are equal, else <c>false</c></returns>
     public static bool IsEqual(this float x, float y)
     {
-        const float epsilon = 0.00001f;
-        return Math.Abs(x - y) < epsilon;
+        return Math.Abs(x - y) < Epsilon;
     }
 
     /// <summary>

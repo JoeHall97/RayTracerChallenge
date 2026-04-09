@@ -40,7 +40,7 @@ public class Chapter6 : IChapterExercise
                 var point = ray.Position(hit.Value.T);
                 var normal = shape.NormalAt(point);
                 var eye = -ray.Direction;
-                var colour = shape.Material.Lighting(light, point, eye, normal);
+                var colour = shape.Material.Lighting(light, point, eye, normal, false);
                 canvas.WritePixel(x, y, colour);
             }
         }

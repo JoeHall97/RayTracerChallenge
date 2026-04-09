@@ -1,4 +1,5 @@
 ﻿using RTC.Datastructures;
+using RTC.Helpers;
 using RTC.Objects;
 using RTC.Primitives;
 using Shouldly;
@@ -7,6 +8,18 @@ namespace RTC.UnitTests.Primitives;
 
 public class WorldUnitTests
 {
+    public static IEnumerable<object[]> ShadowingTestData =>
+    [
+        // there is no shadow when nothing is blocking a light source
+        [Vec4.Point(0, 10, 0), false],
+        // there is shadow when an object is blocking a light source
+        [Vec4.Point(10, -10, 10), true],
+        // there is no shadow when an object is behind the light source
+        [Vec4.Point(-20, 20, -20), false],
+        // there is no shadow when an object is behind the point
+        [Vec4.Point(-2, 2, -2), false],
+    ];
+    
     public static IEnumerable<object[]> ViewTransformTestData =>
     [
         // The default orientation.
@@ -105,5 +118,49 @@ public class WorldUnitTests
     public void TestViewTransform(Vec4 from, Vec4 to, Vec4 up, Matrix expected)
     {
         Matrix.ViewTransform(from, to, up).ShouldBe(expected);
+    }
+
+    [Theory]
+    [MemberData(nameof(ShadowingTestData))]
+    public void TestShadowing(Vec4 point, bool expected)
+    {
+        var w = World.DefaultWorld();
+        w.IsShadowed(w.Lights.First(), point).ShouldBe(expected);
+    }
+
+    [Fact]
+    public void TestShadeHitWithAnIntersectionInShadow()
+    {
+        var w = new World();
+        w.Lights.Add(new PointLight(Colour.White, Vec4.Point(0, 0, -10)));
+        
+        var s1 = new Sphere();
+        w.Shapes.Add(s1);
+        var s2 = new Sphere()
+        {
+            Transformation = Matrix.TranslationMatrix(0, 0, 10)
+        };
+        w.Shapes.Add(s2);
+        
+        var r = new Ray(Vec4.Point(0, 0, 5), Vec4.Vector(0, 0, 1));
+        var i = new Intersection(s2, 4);
+        var comps = new Precompute(i, r);
+        var c = w.ShadeHit(comps);
+        c.ShouldBe(new Colour(0.1d, 0.1d, 0.1d));
+    }
+    
+    [Fact]
+    public void TestShadeHitShouldOffsetThePoint()
+    {
+        var r = new Ray(Vec4.Point(0, 0, -5), Vec4.Vector(0, 0, 1));
+        var shape = new Sphere()
+        {
+            Transformation = Matrix.TranslationMatrix(0, 0, 1)
+        };
+        var i = new Intersection(shape, 5);
+        
+        var comps = new Precompute(i, r);
+        comps.OverPoint.Z.ShouldBeLessThan(-Helper.Epsilon/2);
+        comps.Point.Z.ShouldBeGreaterThan(comps.OverPoint.Z);
     }
 }

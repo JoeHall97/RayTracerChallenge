@@ -28,6 +28,17 @@ public class MaterialUnitTests
     {
         var m = new Material();
         var position = Vec4.Point(0, 0, 0);
-        m.Lighting(light, position, eyeVec, normal).ShouldBe(expected);
+        m.Lighting(light, position, eyeVec, normal, false).ShouldBe(expected);
+    }
+
+    [Fact]
+    public void TestMaterialLightingWithShadow()
+    {
+        var m = new Material();
+        var position = Vec4.Point(0, 0, 0);
+        var eyeVec = Vec4.Vector(0, 0, -1);
+        var normal = Vec4.Vector(0, 0, -1);
+        var light = new PointLight(Colour.White, Vec4.Point(0, 0, -10));
+        m.Lighting(light, position, eyeVec, normal, true).ShouldBe(new Colour(0.1d, 0.1d, 0.1d));
     }
 }

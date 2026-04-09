@@ -28,7 +28,7 @@ public readonly struct World(List<Shape> shapes, List<PointLight> lights)
     /// <returns></returns>
     public static World DefaultWorld()
     {
-        var light = new PointLight(Colour.White, Vec4.Point(10, 10, -10));
+        var light = new PointLight(Colour.White, Vec4.Point(-10, 10, -10));
         var s1 = new Sphere();
         s1.Material = s1.Material with
         {
@@ -65,7 +65,12 @@ public readonly struct World(List<Shape> shapes, List<PointLight> lights)
         var colour = Colour.Black;
         foreach (var light in Lights)
         {
-            colour += comps.Shape.Material.Lighting(light, comps.Point, comps.EyeVec, comps.NormalVec);
+            colour += comps.Shape.Material.Lighting(light, 
+                comps.OverPoint, 
+                comps.EyeVec, 
+                comps.NormalVec, 
+                IsShadowed(light, comps.OverPoint)
+            );
         }
         return colour;
     }
@@ -80,5 +85,24 @@ public readonly struct World(List<Shape> shapes, List<PointLight> lights)
         var xs = IntersectWorld(r);
         var hit = xs.Hit();
         return hit == null ? Colour.Black : ShadeHit(new Precompute(hit.Value, r));
+    }
+
+    /// <summary>
+    /// Checks if something intersects a shadow ray between the point and the light source.
+    /// </summary>
+    /// <param name="point">The point to check for shadowing.</param>
+    /// <param name="light">The light source to check against.</param>
+    /// <returns><c>true</c> if the point is shadowed, <c>false</c> otherwise.</returns>
+    public bool IsShadowed(PointLight light, Vec4 point)
+    {
+        var v = light.Position - point;
+        var distance = v.Magnitude;
+        var direction = v.Normalise();
+            
+        var r = new Ray(point, direction);
+        var intersections = IntersectWorld(r);
+            
+        var h = intersections.Hit();
+        return h != null && h.Value.T < distance;
     }
 }

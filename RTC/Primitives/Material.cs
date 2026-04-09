@@ -61,8 +61,9 @@ public struct Material(Colour colour, double ambient, double diffuse, double spe
     /// <param name="position">The position to calculate lighting for.</param>
     /// <param name="eyeVec">The vector from the eye/camera.</param>
     /// <param name="normal">The normal vector at the position.</param>
+    /// <param name="inShadow"><c>true</c> if the position is in shadow, else <c>false</c>.</param>
     /// <returns>The colour of the material at the given position.</returns>
-    public Colour Lighting(PointLight light, Vec4 position, Vec4 eyeVec, Vec4 normal)
+    public Colour Lighting(PointLight light, Vec4 position, Vec4 eyeVec, Vec4 normal, bool inShadow)
     {
         var effectiveColour = Colour * light.Intensity;
         var lightVec = (light.Position - position).Normalise();
@@ -91,7 +92,7 @@ public struct Material(Colour colour, double ambient, double diffuse, double spe
                 specular = light.Intensity * Specular * factor;
             }
         }
-        
-        return ambient + diffuse + specular;
+
+        return inShadow ? ambient : ambient + diffuse + specular;
     }
 }
