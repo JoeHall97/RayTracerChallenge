@@ -3,14 +3,14 @@ using RTC.Primitives;
 namespace RTC.Helpers;
 
 /// <summary>
-/// Helper methods.
+///     Helper methods.
 /// </summary>
 public static class Helper
 {
-    public const float Epsilon = 0.00001f;
-    
+    public const float Epsilon = 0.0001f;
+
     /// <summary>
-    /// Checks if two doubles are equal, with a tolerance of 0.00001.
+    ///     Checks if two doubles are equal, with a tolerance of 0.00001.
     /// </summary>
     /// <param name="x"></param>
     /// <param name="y"></param>
@@ -19,9 +19,9 @@ public static class Helper
     {
         return Math.Abs(x - y) < Epsilon;
     }
-    
+
     /// <summary>
-    /// Checks if two floats are equal, with a tolerance of 0.00001.
+    ///     Checks if two floats are equal, with a tolerance of 0.00001.
     /// </summary>
     /// <param name="x"></param>
     /// <param name="y"></param>
@@ -32,7 +32,7 @@ public static class Helper
     }
 
     /// <summary>
-    /// Returns the hit intersection.
+    ///     Returns the hit intersection.
     /// </summary>
     /// <param name="intersections"></param>
     /// <returns></returns>
@@ -42,5 +42,5 @@ public static class Helper
         if (intersections[0].T > 0) return intersections[0];
         if (intersections.Length < 1 || intersections[1].T < 0) return null;
         return intersections[1];
-    } 
+    }
 }

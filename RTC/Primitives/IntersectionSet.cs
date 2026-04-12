@@ -1,12 +1,14 @@
-﻿namespace RTC.Primitives;
+﻿using RTC.Helpers;
+
+namespace RTC.Primitives;
 
 /// <summary>
-/// A sorted set of intersections.
+///     A sorted set of intersections.
 /// </summary>
 public readonly struct IntersectionSet
 {
     /// <summary>
-    /// Compares/sorts intersections by their 'T' value.
+    ///     Compares/sorts intersections by their 'T' value.
     /// </summary>
     private readonly struct IntersectionComparer : IComparer<Intersection>
     {
@@ -20,31 +22,28 @@ public readonly struct IntersectionSet
     {
         Values = new SortedSet<Intersection>(new IntersectionComparer());
     }
-    
+
     public IntersectionSet(params Intersection[] intersections)
     {
         Values = new SortedSet<Intersection>(new IntersectionComparer());
-        
-        foreach (var intersection in intersections)
-        {
-            Values.Add(intersection);
-        }
-    } 
-    
+
+        foreach (var intersection in intersections) Values.Add(intersection);
+    }
+
     /// <summary>
-    /// The sorted set of intersections.
+    ///     The sorted set of intersections.
     /// </summary>
     public SortedSet<Intersection> Values { get; }
 
     /// <summary>
-    /// Gets the first intersection that has a positive 'T' value.
+    ///     Gets the first intersection that has a positive 'T' value.
     /// </summary>
     /// <returns>The first intersection that has a positive 'T' value, <c>null</c> if none found.</returns>
     public Intersection? Hit()
     {
         try
         {
-            return Values.First(i => i.T > 0);
+            return Values.First(i => i.T > Helper.Epsilon);
         }
         catch (InvalidOperationException)
         {
@@ -53,15 +52,11 @@ public readonly struct IntersectionSet
     }
 
     /// <summary>
-    /// Adds the intersections to the set.
+    ///     Adds the intersections to the set.
     /// </summary>
     /// <param name="intersections">The intersections to add.</param>
     public void AddIntersections(Intersection[] intersections)
     {
-        foreach (var intersection in intersections)
-        {
-            Values.Add(intersection);
-        }
+        foreach (var intersection in intersections) Values.Add(intersection);
     }
 }
-
