@@ -4,26 +4,28 @@ using RTC.Objects;
 namespace RTC.Primitives;
 
 /// <summary>
-/// A world that contains collections of shapes and lights.
+///     A world that contains collections of shapes and lights.
 /// </summary>
 /// <param name="shapes">The shapes contained in the world.</param>
 /// <param name="lights">The lights contained in the world.</param>
 public readonly struct World(List<Shape> shapes, List<PointLight> lights)
 {
     public World() : this([], [])
-    {}
-    
+    {
+    }
+
     /// <summary>
-    /// The shapes contained in the world.
+    ///     The shapes contained in the world.
     /// </summary>
     public List<Shape> Shapes { get; } = shapes;
+
     /// <summary>
-    /// The lights contained in the world.
+    ///     The lights contained in the world.
     /// </summary>
     public List<PointLight> Lights { get; } = lights;
 
     /// <summary>
-    /// Creates a default world with a single light source and two spheres.
+    ///     Creates a default world with a single light source and two spheres.
     /// </summary>
     /// <returns></returns>
     public static World DefaultWorld()
@@ -41,22 +43,19 @@ public readonly struct World(List<Shape> shapes, List<PointLight> lights)
     }
 
     /// <summary>
-    /// Intersects the ray with all shapes in the world.
+    ///     Intersects the ray with all shapes in the world.
     /// </summary>
     /// <param name="r">The ray that is being intersected with.</param>
     /// <returns>The set of intersections between the ray and the shapes in the world.</returns>
     public IntersectionSet IntersectWorld(Ray r)
     {
         var intersections = new IntersectionSet();
-        foreach (var shape in Shapes)
-        {
-            intersections.AddIntersections(shape.Intersect(r));
-        }
+        foreach (var shape in Shapes) intersections.AddIntersections(shape.Intersect(r));
         return intersections;
     }
 
     /// <summary>
-    /// Calculates the colour of the given hit.
+    ///     Calculates the colour of the given hit.
     /// </summary>
     /// <param name="comps">The precomputed information about the hit.</param>
     /// <returns>The colour of the hit.</returns>
@@ -64,19 +63,17 @@ public readonly struct World(List<Shape> shapes, List<PointLight> lights)
     {
         var colour = Colour.Black;
         foreach (var light in Lights)
-        {
-            colour += comps.Shape.Material.Lighting(light, 
-                comps.OverPoint, 
-                comps.EyeVec, 
-                comps.NormalVec, 
+            colour += comps.Shape.Material.Lighting(comps.Shape, light,
+                comps.OverPoint,
+                comps.EyeVec,
+                comps.NormalVec,
                 IsShadowed(light, comps.OverPoint)
             );
-        }
         return colour;
     }
 
     /// <summary>
-    /// Intersects the ray with the shapes in the world and calculates the colour of the resulting intersection.
+    ///     Intersects the ray with the shapes in the world and calculates the colour of the resulting intersection.
     /// </summary>
     /// <param name="r">The ray that is being intersected with.</param>
     /// <returns>The colour of the intersection. Black if no intersection occurs.</returns>
@@ -88,7 +85,7 @@ public readonly struct World(List<Shape> shapes, List<PointLight> lights)
     }
 
     /// <summary>
-    /// Checks if something intersects a shadow ray between the point and the light source.
+    ///     Checks if something intersects a shadow ray between the point and the light source.
     /// </summary>
     /// <param name="point">The point to check for shadowing.</param>
     /// <param name="light">The light source to check against.</param>
@@ -98,10 +95,10 @@ public readonly struct World(List<Shape> shapes, List<PointLight> lights)
         var v = light.Position - point;
         var distance = v.Magnitude;
         var direction = v.Normalise();
-            
+
         var r = new Ray(point, direction);
         var intersections = IntersectWorld(r);
-            
+
         var h = intersections.Hit();
         return h != null && h.Value.T < distance;
     }

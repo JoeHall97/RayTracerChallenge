@@ -4,6 +4,8 @@ using RTC.Console.Exercises;
 var implementations = Assembly.GetExecutingAssembly()
     .GetTypes()
     .Where(t => typeof(IChapterExercise).IsAssignableFrom(t) && t is { IsInterface: false, IsAbstract: false })
+    .OrderBy(t => t.Name.Length)
+    .ThenBy(t => t.Name)
     .ToList();
 
 Console.WriteLine("Choose Chapter Exercise to Run:");

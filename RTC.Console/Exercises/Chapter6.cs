@@ -13,7 +13,7 @@ public class Chapter6 : IChapterExercise
         const double wallSize = 10.0d;
         const double pixelSize = wallSize / pixelCount;
         const double halfWallSize = wallSize / 2.0d;
-        
+
         var rayOrigin = Vec4.Point(0, 0, -5);
         var shape = new Sphere
         {
@@ -36,15 +36,15 @@ public class Chapter6 : IChapterExercise
 
                 var hit = xs.Hit();
                 if (hit is null) continue;
-                
+
                 var point = ray.Position(hit.Value.T);
                 var normal = shape.NormalAt(point);
                 var eye = -ray.Direction;
-                var colour = shape.Material.Lighting(light, point, eye, normal, false);
+                var colour = shape.Material.Lighting(shape, light, point, eye, normal, false);
                 canvas.WritePixel(x, y, colour);
             }
         }
-        
+
         canvas.SavePpm("ChapterSix.ppm");
         canvas.SavePng("ChapterSix.png");
     }
