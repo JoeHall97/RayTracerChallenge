@@ -8,28 +8,23 @@ namespace RTC.Primitives;
 /// <summary>
 ///     A material for a shape's surface.
 /// </summary>
-/// <param name="colour">The colour of the material.</param>
-/// <param name="ambient">The ambient light reflection.</param>
-/// <param name="diffuse">The diffuse light reflection.</param>
-/// <param name="specular">The specular light reflection.</param>
-/// <param name="shininess">The shininess of the material.</param>
-public struct Material(Colour colour, double ambient, double diffuse, double specular, double shininess)
+public readonly struct Material : IEquatable<Material>
 {
-    public Material() : this(Colour.White, 0.1d, 0.9d, 0.9d, 200.0d)
+    public Material()
     {
     }
 
-    public Material(StripePattern pattern) : this(Colour.White, 0.1d, 0.9d, 0.9d, 200.0d)
+    public Material(Pattern pattern)
     {
         Pattern = pattern;
     }
 
-    public Material(Colour colour) : this(colour, 0.1d, 0.9d, 0.9d, 200.0d)
+    public Material(Colour colour)
     {
         Colour = colour;
     }
 
-    public Material(Colour colour, StripePattern pattern) : this(colour, 0.1d, 0.9d, 0.9d, 200.0d)
+    public Material(Colour colour, Pattern pattern)
     {
         Colour = colour;
         Pattern = pattern;
@@ -38,32 +33,47 @@ public struct Material(Colour colour, double ambient, double diffuse, double spe
     /// <summary>
     ///     The colour of the material.
     /// </summary>
-    public Colour Colour { get; set; } = colour;
-
-    /// <summary>
-    ///     The ambient light reflection.
-    /// </summary>
-    public double Ambient { get; set; } = ambient;
-
-    /// <summary>
-    ///     The diffuse light reflection.
-    /// </summary>
-    public double Diffuse { get; set; } = diffuse;
-
-    /// <summary>
-    ///     The specular light reflection.
-    /// </summary>
-    public double Specular { get; set; } = specular;
-
-    /// <summary>
-    ///     The shininess of the material.
-    /// </summary>
-    public double Shininess { get; set; } = shininess;
+    public Colour Colour { get; init; } = Colour.White;
 
     /// <summary>
     ///     The pattern of the shape.
     /// </summary>
-    public Pattern? Pattern { get; set; } = null;
+    public Pattern? Pattern { get; init; } = null;
+
+    /// <summary>
+    ///     The ambient light reflection.
+    /// </summary>
+    public double Ambient { get; init; } = 0.1d;
+
+    /// <summary>
+    ///     The diffuse light reflection.
+    /// </summary>
+    public double Diffuse { get; init; } = 0.9d;
+
+    /// <summary>
+    ///     The specular light reflection.
+    /// </summary>
+    public double Specular { get; init; } = 0.9d;
+
+    /// <summary>
+    ///     The shininess of the material.
+    /// </summary>
+    public double Shininess { get; init; } = 200.0d;
+
+    /// <summary>
+    ///     The reflectivity of the material.
+    /// </summary>
+    public double Reflective { get; init; } = 0.0d;
+
+    /// <summary>
+    ///     The transparency of the material.
+    /// </summary>
+    public double Transparency { get; init; } = 0.0d;
+
+    /// <summary>
+    ///     The refractive index of the material.
+    /// </summary>
+    public double RefractiveIndex { get; init; } = 1.0d;
 
     public override string ToString()
     {
@@ -123,5 +133,15 @@ public struct Material(Colour colour, double ambient, double diffuse, double spe
         }
 
         return inShadow ? ambient : ambient + diffuse + specular;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return obj is Material material && Equals(material);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Colour, Ambient, Diffuse, Specular, Shininess);
     }
 }

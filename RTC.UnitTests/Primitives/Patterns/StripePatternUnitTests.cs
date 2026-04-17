@@ -57,8 +57,7 @@ public class StripePatternUnitTests
     public void TestStripePattern(Vec4 point, Colour expectedColour)
     {
         var pattern = new StripePattern(Colour.White, Colour.Black);
-        var s = new Sphere();
-        pattern.PatternAt(s, point).ShouldBe(expectedColour);
+        pattern.PatternAt(point).ShouldBe(expectedColour);
     }
 
     [Theory]

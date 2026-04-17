@@ -6,6 +6,15 @@ namespace RTC.Objects;
 
 public class Plane : Shape
 {
+    public Plane()
+    {
+    }
+
+    public Plane(Matrix transform)
+    {
+        Transformation = transform;
+    }
+
     protected override Intersection[] LocalIntersect(Ray localRay)
     {
         if (Math.Abs(localRay.Direction.Y) < Helper.Epsilon) return [];

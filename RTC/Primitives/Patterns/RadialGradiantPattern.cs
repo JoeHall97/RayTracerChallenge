@@ -1,5 +1,4 @@
 ﻿using RTC.Datastructures;
-using RTC.Objects;
 
 namespace RTC.Primitives.Patterns;
 
@@ -36,11 +35,11 @@ public class RadialGradiantPattern : Pattern
     private Pattern A { get; }
     private Pattern B { get; }
 
-    public override Colour PatternAt(Shape shape, Vec4 point)
+    public override Colour PatternAt(Vec4 point)
     {
         var x = Math.Sqrt(point.X * point.X + point.Z * point.Z);
         var fraction = x - Math.Floor(x);
-        var distance = B.PatternAtObject(shape, point) - A.PatternAtObject(shape, point);
-        return A.PatternAtObject(shape, point) + distance * fraction;
+        var distance = B.PatternAt(point) - A.PatternAt(point);
+        return A.PatternAt(point) + distance * fraction;
     }
 }

@@ -1,5 +1,4 @@
 ﻿using RTC.Datastructures;
-using RTC.Objects;
 
 namespace RTC.Primitives.Patterns;
 
@@ -46,8 +45,8 @@ public class StripePattern : Pattern
     /// </summary>
     private Pattern B { get; }
 
-    public override Colour PatternAt(Shape shape, Vec4 point)
+    public override Colour PatternAt(Vec4 point)
     {
-        return Math.Floor(point.X) % 2 == 0 ? A.PatternAtObject(shape, point) : B.PatternAtObject(shape, point);
+        return Math.Floor(point.X) % 2 == 0 ? A.PatternAt(point) : B.PatternAt(point);
     }
 }

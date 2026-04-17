@@ -1,5 +1,4 @@
 ﻿using RTC.Datastructures;
-using RTC.Objects;
 using RTC.Primitives;
 using RTC.Primitives.Patterns;
 using Shouldly;
@@ -29,7 +28,6 @@ public class CheckerPatternUnitTests
     public void TestCheckerPattern(Vec4 point, Colour expectedColour)
     {
         var pattern = new CheckerPattern(Colour.White, Colour.Black);
-        var s = new Sphere();
-        pattern.PatternAt(s, point).ShouldBe(expectedColour);
+        pattern.PatternAt(point).ShouldBe(expectedColour);
     }
 }

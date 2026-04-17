@@ -1,5 +1,4 @@
 ﻿using RTC.Datastructures;
-using RTC.Objects;
 
 namespace RTC.Primitives.Patterns;
 
@@ -46,10 +45,10 @@ public class RingPattern : Pattern
     /// </summary>
     private Pattern B { get; }
 
-    public override Colour PatternAt(Shape shape, Vec4 point)
+    public override Colour PatternAt(Vec4 point)
     {
         return Math.Floor(Math.Sqrt(point.X * point.X + point.Z * point.Z)) % 2 == 0
-            ? A.PatternAtObject(shape, point)
-            : B.PatternAtObject(shape, point);
+            ? A.PatternAt(point)
+            : B.PatternAt(point);
     }
 }

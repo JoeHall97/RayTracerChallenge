@@ -6,7 +6,7 @@ namespace RTC.Objects;
 /// <summary>
 ///     An abstract shape that can be placed in the scene.
 /// </summary>
-public abstract class Shape
+public abstract class Shape : IEquatable<Shape>
 {
     /// <summary>
     ///     The transformation matrix of the shape.
@@ -17,6 +17,13 @@ public abstract class Shape
     ///     The material of the shape.
     /// </summary>
     public Material Material { get; set; } = new();
+
+    public bool Equals(Shape? other)
+    {
+        if (other is null) return false;
+        if (ReferenceEquals(this, other)) return true;
+        return Transformation.Equals(other.Transformation) && Material.Equals(other.Material);
+    }
 
     /// <summary>
     ///     Calculate the intersections of the given ray with the shape.
@@ -56,4 +63,17 @@ public abstract class Shape
     /// <param name="objectPoint">The point on the shape in local/object space.</param>
     /// <returns>The normal vector at the given point in local/object space.</returns>
     protected abstract Vec4 LocalNormalAt(Vec4 objectPoint);
+
+    public override bool Equals(object? obj)
+    {
+        if (obj is null) return false;
+        if (ReferenceEquals(this, obj)) return true;
+        if (obj.GetType() != GetType()) return false;
+        return Equals((Shape)obj);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Transformation, Material);
+    }
 }

@@ -109,7 +109,7 @@ public class Camera
             Parallel.For(0, HorizontalSize, x =>
             {
                 var ray = RayForPixel((uint)x, y1);
-                var color = world.ColourAt(ray);
+                var color = world.ColourAt(ray, 4);
                 image.WritePixel((int)x, (int)y1, color);
             });
         }

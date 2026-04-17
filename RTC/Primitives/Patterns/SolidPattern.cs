@@ -1,5 +1,4 @@
 ﻿using RTC.Datastructures;
-using RTC.Objects;
 
 namespace RTC.Primitives.Patterns;
 
@@ -22,7 +21,7 @@ public class SolidPattern : Pattern
 
     private Colour Colour { get; }
 
-    public override Colour PatternAt(Shape shape, Vec4 point)
+    public override Colour PatternAt(Vec4 point)
     {
         return Colour;
     }

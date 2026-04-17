@@ -1,5 +1,4 @@
 ﻿using RTC.Datastructures;
-using RTC.Objects;
 
 namespace RTC.Primitives.Patterns;
 
@@ -46,10 +45,10 @@ public class CheckerPattern : Pattern
     /// </summary>
     private Pattern B { get; }
 
-    public override Colour PatternAt(Shape shape, Vec4 point)
+    public override Colour PatternAt(Vec4 point)
     {
         return (Math.Floor(point.X) + Math.Floor(point.Y) + Math.Floor(point.Z)) % 2 == 0
-            ? A.PatternAtObject(shape, point)
-            : B.PatternAtObject(shape, point);
+            ? A.PatternAt(point)
+            : B.PatternAt(point);
     }
 }

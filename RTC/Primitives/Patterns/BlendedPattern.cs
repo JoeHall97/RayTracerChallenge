@@ -32,7 +32,7 @@ public class BlendedPattern : Pattern
     /// </summary>
     private Pattern B { get; }
 
-    public override Colour PatternAt(Shape shape, Vec4 point)
+    public override Colour PatternAt(Vec4 point)
     {
         throw new NotImplementedException();
     }

@@ -24,6 +24,20 @@ public class Chapter10 : IChapterExercise
         };
         world.Shapes.Add(floor);
 
+        var wall = new Plane
+        {
+            Transformation = Matrix.TranslationMatrix(0, 0, 5) *
+                             Matrix.RotationXMatrix(Math.PI / 2)
+        };
+        wall.Material = wall.Material with
+        {
+            Pattern = new StripePattern(
+                new RingPattern(new Colour(0.2d, 0.4d, 0.2d), Colour.White),
+                new SolidPattern(new Colour(0.2d, 0.4d, 0.2d))
+            )
+        };
+        world.Shapes.Add(wall);
+
         var middle = new Sphere
         {
             Transformation = Matrix.TranslationMatrix(-0.5d, 1, 0.5d)
@@ -56,14 +70,11 @@ public class Chapter10 : IChapterExercise
 
         var left = new Sphere
         {
-            Transformation = Matrix.TranslationMatrix(-1.5d, 0.63d, -1) * Matrix.ScalingMatrix(0.64d, 0.64d, 0.64d)
+            Transformation = Matrix.TranslationMatrix(-1.8d, 0.63d, -1) * Matrix.ScalingMatrix(0.64d, 0.64d, 0.64d)
         };
         left.Material = left.Material with
         {
-            Pattern = new StripePattern(
-                new RingPattern(new Colour(0.1d, 1, 0.5d), Colour.White, Matrix.ScalingMatrix(0.33d, 0.33d, 0.33d)),
-                new SolidPattern(new Colour(1, 0.1d, 0.5d), Matrix.ScalingMatrix(0.33d, 0.33d, 0.33d)),
-                Matrix.ScalingMatrix(0.25d, 0.25d, 0.25d)),
+            Pattern = new SolidPattern(new Colour(1, 0.1d, 0.5d)),
             Diffuse = 0.7d,
             Specular = 0.3d
         };
@@ -73,7 +84,7 @@ public class Chapter10 : IChapterExercise
 
         var camera = new Camera(300, 300, Math.PI / 3)
         {
-            Transformation = Matrix.ViewTransform(Vec4.Point(0, 1.5d, -5), Vec4.Point(0, 1, 0), Vec4.Vector(0, 1, 0))
+            Transformation = Matrix.ViewTransform(Vec4.Point(0, 1.5d, -5.5), Vec4.Point(0, 1, 0), Vec4.Vector(0, 1, 0))
         };
 
         var image = camera.Render(world);

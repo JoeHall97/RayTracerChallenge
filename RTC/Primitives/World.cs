@@ -58,17 +58,35 @@ public readonly struct World(List<Shape> shapes, List<PointLight> lights)
     ///     Calculates the colour of the given hit.
     /// </summary>
     /// <param name="comps">The precomputed information about the hit.</param>
+    /// <param name="depth">The recursion depth for reflections.</param>
     /// <returns>The colour of the hit.</returns>
-    public Colour ShadeHit(Precompute comps)
+    public Colour ShadeHit(Precompute comps, uint depth)
     {
         var colour = Colour.Black;
+
         foreach (var light in Lights)
-            colour += comps.Shape.Material.Lighting(comps.Shape, light,
+        {
+            var surface = comps.Shape.Material.Lighting(comps.Shape, light,
                 comps.OverPoint,
                 comps.EyeVec,
                 comps.NormalVec,
                 IsShadowed(light, comps.OverPoint)
             );
+
+            var reflected = ReflectedColour(comps, depth);
+            var refracted = RefractedColour(comps, depth);
+
+            var material = comps.Shape.Material;
+            if (material is { Reflective: > 0, Transparency: > 0 })
+            {
+                var reflectance = comps.Schlick();
+                colour += surface + reflected * reflectance + refracted * (1 - reflectance);
+                continue;
+            }
+
+            colour += surface + reflected + refracted;
+        }
+
         return colour;
     }
 
@@ -76,12 +94,13 @@ public readonly struct World(List<Shape> shapes, List<PointLight> lights)
     ///     Intersects the ray with the shapes in the world and calculates the colour of the resulting intersection.
     /// </summary>
     /// <param name="r">The ray that is being intersected with.</param>
+    /// <param name="depth">The recursion depth for reflections.</param>
     /// <returns>The colour of the intersection. Black if no intersection occurs.</returns>
-    public Colour ColourAt(Ray r)
+    public Colour ColourAt(Ray r, uint depth)
     {
         var xs = IntersectWorld(r);
         var hit = xs.Hit();
-        return hit == null ? Colour.Black : ShadeHit(new Precompute(hit.Value, r));
+        return hit == null ? Colour.Black : ShadeHit(new Precompute(hit.Value, r, xs), depth);
     }
 
     /// <summary>
@@ -101,5 +120,49 @@ public readonly struct World(List<Shape> shapes, List<PointLight> lights)
 
         var h = intersections.Hit();
         return h != null && h.Value.T < distance;
+    }
+
+    /// <summary>
+    ///     Computes the reflected colour of the given computed values.
+    /// </summary>
+    /// <param name="comps">The computed values.</param>
+    /// <param name="depth">The recursion depth for reflections.</param>
+    /// <returns>The reflected colour.</returns>
+    public Colour ReflectedColour(Precompute comps, uint depth)
+    {
+        if (comps.Shape.Material.Reflective == 0 || depth == 0) return Colour.Black;
+
+        var reflectRay = new Ray(comps.OverPoint, comps.ReflectVec);
+        var colour = ColourAt(reflectRay, depth - 1);
+
+        return colour * comps.Shape.Material.Reflective;
+    }
+
+    /// <summary>
+    ///     Computes the refracted colour of the given computed values.
+    /// </summary>
+    /// <param name="comps">The computed values.</param>
+    /// <param name="depth">The recursion depth for refractions.</param>
+    /// <returns>The refracted colour.</returns>
+    public Colour RefractedColour(Precompute comps, uint depth)
+    {
+        if (comps.Shape.Material.Transparency == 0 || depth == 0) return Colour.Black;
+
+        // find the ratio of the first index of refraction to the second
+        var nRatio = comps.N1 / comps.N2;
+        // cos(thetaI) is the same as the fot product of the two vectors
+        var cosI = comps.EyeVec.Dot(comps.NormalVec);
+        // find sin(thetaT)^2 via trigonometric identities
+        var sin2T = nRatio * nRatio * (1 - cosI * cosI);
+
+        if (sin2T > 1) return Colour.Black;
+
+        // find cos(thetaT) via trigonometric identities
+        var cosT = Math.Sqrt(1 - sin2T);
+        // compute the direction of the refracted ray
+        var direction = comps.NormalVec * (nRatio * cosI - cosT) - comps.EyeVec * nRatio;
+        var refractedRay = new Ray(comps.UnderPoint, direction);
+        // find the colour of the refracted ray, taking into account the transparency of the material
+        return ColourAt(refractedRay, depth - 1) * comps.Shape.Material.Transparency;
     }
 }

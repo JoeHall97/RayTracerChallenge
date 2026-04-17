@@ -13,10 +13,9 @@ public abstract class Pattern
     /// <summary>
     ///     Computes the colour of the pattern at the given point.
     /// </summary>
-    /// <param name="shape">The shape on which the pattern is applied.</param>
     /// <param name="point">The point at which to compute the pattern colour.</param>
     /// <returns>The colour of the pattern at the given point.</returns>
-    public abstract Colour PatternAt(Shape shape, Vec4 point);
+    public abstract Colour PatternAt(Vec4 point);
 
     /// <summary>
     ///     Computes the colour of the pattern at the given point on the given shape.
@@ -28,6 +27,6 @@ public abstract class Pattern
     {
         var objectPoint = shape.Transformation.Inverse() * worldPoint;
         var patternPoint = Transform.Inverse() * objectPoint;
-        return PatternAt(shape, patternPoint);
+        return PatternAt(patternPoint);
     }
 }

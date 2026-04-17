@@ -20,6 +20,18 @@ public class Sphere(Vec4 origin, float radius) : Shape
         Transformation = transformation;
     }
 
+    public Sphere(Material material) : this(Vec4.Point(0, 0, 0), 1)
+    {
+        Transformation = Matrix.IdentityMatrix(4);
+        Material = material;
+    }
+
+    public Sphere(Material material, Matrix transform) : this(Vec4.Point(0, 0, 0), 1)
+    {
+        Transformation = transform;
+        Material = material;
+    }
+
     /// <summary>
     ///     The origin/position of the sphere.
     /// </summary>
@@ -33,6 +45,32 @@ public class Sphere(Vec4 origin, float radius) : Shape
     public override string ToString()
     {
         return $"Sphere(origin: {Origin}, radius: {Radius})";
+    }
+
+    /// <summary>
+    ///     Creates a sphere with a glassy material.
+    /// </summary>
+    /// <returns></returns>
+    public static Sphere GlassSphere()
+    {
+        return new Sphere(new Material
+        {
+            Transparency = 1,
+            RefractiveIndex = 1.5d
+        });
+    }
+
+    /// <summary>
+    ///     Creates a sphere with a glassy material.
+    /// </summary>
+    /// <returns></returns>
+    public static Sphere GlassSphere(Matrix transformation)
+    {
+        return new Sphere(new Material
+        {
+            Transparency = 1,
+            RefractiveIndex = 1.5d
+        }, transformation);
     }
 
     protected override Intersection[] LocalIntersect(Ray localRay)
