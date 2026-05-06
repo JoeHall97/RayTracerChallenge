@@ -34,7 +34,7 @@ public class BlendedPattern : Pattern
 
     public override Colour PatternAt(Vec4 point)
     {
-        throw new NotImplementedException();
+        throw new InvalidOperationException();
     }
 
     public override Colour PatternAtObject(Shape shape, Vec4 worldPoint)
