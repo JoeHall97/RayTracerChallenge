@@ -14,15 +14,14 @@ struct World {
   Light light;
 
   [[nodiscard]] SortedIntersections intersections(const Ray &ray) const;
-  [[nodiscard]] Colour shadeHit(const Precompute &comp) const noexcept;
-  [[nodiscard]] Colour
-  shadeHitWithReflections(const Precompute &comp,
-                          const uint8_t depth) const noexcept;
+  [[nodiscard]] Colour shadeHit(const Precompute &comp,
+                                const uint8_t depth) const noexcept;
   [[nodiscard]] Colour reflectedColour(const Precompute &comp,
                                        const uint8_t depth) const noexcept;
-  [[nodiscard]] Colour colourAt(const Ray &ray) const noexcept;
-  [[nodiscard]] Colour
-  colourAtWithReflections(const Ray &ray, const uint8_t depth) const noexcept;
+  [[nodiscard]] Colour refractedColour(const Precompute &comp,
+                                       const uint8_t depth) const noexcept;
+  [[nodiscard]] Colour colourAt(const Ray &ray,
+                                const uint8_t depth) const noexcept;
   [[nodiscard]] bool isShadowed(const Vec4 &point) const noexcept;
 };
 

@@ -47,3 +47,8 @@ add_executable(Chapter10 chapter10.cpp)
 target_link_libraries(Chapter10 PRIVATE rtc::lib)
 set_property(TARGET Chapter10 PROPERTY CXX_STANDARD 23)
 set_property(TARGET Chapter10 PROPERTY CXX_STANDARD_REQUIRED ON)
+
+add_executable(Chapter11 chapter11.cpp)
+target_link_libraries(Chapter11 PRIVATE rtc::lib)
+set_property(TARGET Chapter11 PROPERTY CXX_STANDARD 23)
+set_property(TARGET Chapter11 PROPERTY CXX_STANDARD_REQUIRED ON)

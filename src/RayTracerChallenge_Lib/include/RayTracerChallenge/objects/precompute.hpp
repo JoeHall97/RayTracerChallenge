@@ -6,10 +6,12 @@
 
 namespace rtc {
 struct Precompute {
-  Vec4 point, eyeVec, normalVec, overPoint, reflectVec;
+  Vec4 point, eyeVec, normalVec, overPoint, underPoint, reflectVec;
   const Object *object;
   float t, n1, n2;
   bool inside;
+
+  float schlick() const noexcept;
 };
 
 Precompute prepareComputation(const Intersection &intersection, const Ray &ray);

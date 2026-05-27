@@ -145,4 +145,29 @@ public:
 private:
   Matrix transformationMatrix;
 };
+
+class TestPattern : public Pattern {
+public:
+  explicit TestPattern() : transformationMatrix_(identity(4)) {}
+  explicit TestPattern(const Matrix &matrix) : transformationMatrix_(matrix) {}
+
+  [[nodiscard]] Colour patternAt(const Vec4 &point) const noexcept override {
+    return rtc::Colour{point.x, point.y, point.z};
+  }
+
+  [[nodiscard]] Matrix getTransformationMatrix() const noexcept override {
+    return transformationMatrix_;
+  }
+
+  void setTransformationMatrix(const Matrix &matrix) noexcept override {
+    transformationMatrix_ = matrix;
+  }
+
+  [[nodiscard]] std::unique_ptr<Pattern> clone() const noexcept override {
+    return std::make_unique<TestPattern>(*this);
+  }
+
+private:
+  Matrix transformationMatrix_;
+};
 } // namespace rtc

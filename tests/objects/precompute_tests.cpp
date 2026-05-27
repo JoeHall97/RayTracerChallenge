@@ -1,4 +1,6 @@
+#include "RayTracerChallenge/datastructures/matrix.hpp"
 #include "RayTracerChallenge/datastructures/vec4.hpp"
+#include "RayTracerChallenge/helpers/helpers.hpp"
 #include "RayTracerChallenge/objects/intersection.hpp"
 #include "RayTracerChallenge/objects/plane.hpp"
 #include <RayTracerChallenge/objects/precompute.hpp>
@@ -171,6 +173,30 @@ SCENARIO("Finding n1 and n2 at various intersections.") {
       AND_THEN("comps.n2 = 1.0") {
         CHECK(rtc::areFloatsEqual(comps.n1, 1.5f));
         CHECK(rtc::areFloatsEqual(comps.n2, 1.0f));
+      }
+    }
+  }
+}
+
+SCENARIO("The under point is offset below the surface.") {
+  GIVEN("r = ray(point(0,0,-5), vector(0,0,1))")
+  AND_GIVEN("shape = glassSphere()")
+  AND_GIVEN("shape.transform = translation(0,0,1)")
+  AND_GIVEN("i = intersection(5, shape)")
+  AND_GIVEN("xs = intersections(i)") {
+    const rtc::Ray r{rtc::point(0, 0, -5), rtc::vector(0, 0, 1)};
+    auto shape = rtc::glassSphere();
+    shape.setTransformationMatrix(rtc::translationMatrix(0, 0, 1));
+    const rtc::Intersection i{5.0f, &shape};
+    const rtc::SortedIntersections xs{i};
+
+    WHEN("comps = prepareComputation(i, r, xs)") {
+      const auto comps = rtc::prepareComputation(i, r, xs);
+
+      THEN("comps.underPoint.z > EPSILON/2")
+      AND_THEN("comps.underPoint.z > comps.point.z") {
+        CHECK(comps.underPoint.z > rtc::EPSILON / 2.0f);
+        CHECK(comps.underPoint.z > comps.point.z);
       }
     }
   }

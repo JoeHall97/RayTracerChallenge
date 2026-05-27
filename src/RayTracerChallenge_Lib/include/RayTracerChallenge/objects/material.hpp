@@ -97,6 +97,6 @@ struct Material {
 };
 
 [[nodiscard]] inline Material defaultMaterial() noexcept {
-  return Material{Colour{1, 1, 1}, 0.1, 0.9, 0.9, 200.0, 0.0, 0.0, 1.0f};
+  return Material{Colour{1, 1, 1}, 0.1f, 0.9f, 0.9f, 200.0f, 0.0f, 0.0f, 1.0f};
 }
 } // namespace rtc

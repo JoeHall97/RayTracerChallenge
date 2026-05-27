@@ -1,9 +1,16 @@
-#include "RayTracerChallenge/objects/plane.hpp"
-
+#include "RayTracerChallenge/datastructures/matrix.hpp"
+#include "RayTracerChallenge/datastructures/vec4.hpp"
+#include "RayTracerChallenge/objects/colour.hpp"
+#include "RayTracerChallenge/objects/intersection.hpp"
+#include "RayTracerChallenge/objects/patterns.hpp"
+#include "RayTracerChallenge/objects/precompute.hpp"
+#include <RayTracerChallenge/objects/plane.hpp>
 #include <RayTracerChallenge/objects/ray.hpp>
 #include <RayTracerChallenge/objects/sphere.hpp>
 #include <RayTracerChallenge/objects/world.hpp>
 #include <catch2/catch_test_macros.hpp>
+#include <cmath>
+#include <memory>
 
 SCENARIO("Intersect a world with a ray.") {
   GIVEN("w = defaultWorld()")
@@ -37,7 +44,7 @@ SCENARIO("Shading an intersection.") {
     const auto w = rtc::defaultWorld();
     const rtc::Ray r{rtc::point(0, 0, -5), rtc::vector(0, 0, 1)};
     WHEN("c = w.colourAt(r)") {
-      const auto c = w.colourAt(r);
+      const auto c = w.colourAt(r, 1);
       THEN("c = colour(0.38066, 0.47583, 0.2855)") {
         CHECK(c == rtc::Colour{0.38066f, 0.47583f, 0.2855f});
       }
@@ -53,7 +60,7 @@ SCENARIO("Shading an intersection from the side.") {
     w.light = rtc::Light{rtc::Colour{1, 1, 1}, rtc::point(0, 0.25f, 0)};
     const rtc::Ray r{rtc::point(0, 0, 0), rtc::vector(0, 0, 1)};
     WHEN("c = w.colourAt(r)") {
-      const auto c = w.colourAt(r);
+      const auto c = w.colourAt(r, 1);
       THEN("c = colour(0.90498, 0.90498, 0.90498)") {
         CHECK(c == rtc::Colour{0.90498f, 0.90498f, 0.90498f});
       }
@@ -67,7 +74,7 @@ SCENARIO("The colour when a ray misses.") {
     const auto w = rtc::defaultWorld();
     const rtc::Ray r{rtc::point(0, 0, -5), rtc::vector(0, 1, 0)};
     WHEN("c = w.colourAt(r)") {
-      const auto c = w.colourAt(r);
+      const auto c = w.colourAt(r, 1);
       THEN("c = colour(0, 0, 0)") { CHECK(c == rtc::Colour{0, 0, 0}); }
     }
   }
@@ -89,7 +96,7 @@ SCENARIO("The colour with an intersection behind the ray.") {
     w.objects[1]->setMaterial(obj2Material);
     const rtc::Ray r{rtc::point(0, 0, 0.75), rtc::vector(0, 0, -1)};
     WHEN("c = w.colourAt(r)") {
-      const auto c = w.colourAt(r);
+      const auto c = w.colourAt(r, 1);
       THEN("c = inner.material.colour") {
         CHECK(c == w.objects[1]->getMaterial().colour);
       }
@@ -156,7 +163,7 @@ SCENARIO("shadeHit() is given an intersection with a shadow.") {
     WHEN("comps = prepareComputations(i, r)")
     AND_WHEN("c = shadeHit(w, comps)") {
       const auto comps = rtc::prepareComputation(i, r);
-      const auto c = w.shadeHit(comps);
+      const auto c = w.shadeHit(comps, 1);
       THEN("c = colour(0.1, 0.1, 0.1)") {
         REQUIRE(c == rtc::Colour{0.1f, 0.1f, 0.1f});
       }
@@ -255,7 +262,7 @@ SCENARIO("shadeHit() with a reflective material.") {
     WHEN("comps = prepareComputations(i, r)")
     AND_WHEN("c = shadeHit(w, comps)") {
       const auto comps = rtc::prepareComputation(i, r);
-      const auto c = w.shadeHitWithReflections(comps, 1);
+      const auto c = w.shadeHit(comps, 1);
       THEN("c = colour(0.87677, 0.92436, 0.82918)") {
         CHECK(c == rtc::Colour(0.87677f, 0.92436f, 0.82918f));
       }
@@ -290,7 +297,7 @@ SCENARIO("colourAt() with mutually reflective surfaces.") {
     w.objects.emplace_back(std::make_unique<rtc::Plane>(upper));
     const auto r = rtc::Ray{rtc::point(0, 0, 0), rtc::vector(0, 1, 0)};
     THEN("w.colourAt(r) should terminate.") {
-      REQUIRE_NOTHROW(w.colourAtWithReflections(r, 2));
+      REQUIRE_NOTHROW(w.colourAt(r, 2));
     }
   }
 }
@@ -319,7 +326,198 @@ SCENARIO("The reflected colour at the maximum recursion depth.") {
     AND_WHEN("c = reflectedColour(w, comps, 0)") {
       const auto comps = rtc::prepareComputation(i, r);
       const auto c = w.reflectedColour(comps, 0);
-      THEN("c = colour(0,0,0)") { CHECK(c == rtc::Colour(0, 0, 0)); }
+      THEN("c = colour(0,0,0)") { CHECK(c == rtc::BLACK); }
+    }
+  }
+}
+
+SCENARIO("The refracted colour with an opaque surface.") {
+  GIVEN("w = defaultWorld()")
+  AND_GIVEN("shape = the first object in w.")
+  AND_GIVEN("r = ray(point(0,0,-5), vector(0,0,1))")
+  AND_GIVEN("xs = intersections(4:shape, 6:shape)") {
+    const auto w = rtc::defaultWorld();
+    const auto shape = w.objects.begin()->get();
+    const rtc::Ray r{rtc::point(0, 0, -5), rtc::vector(0, 0, 1)};
+    const rtc::Intersection i1{4.0f, shape};
+    const rtc::Intersection i2{6.0f, shape};
+    const rtc::SortedIntersections xs{i1, i2};
+
+    WHEN("comps = prepareComputations(xs[0], r, xs)")
+    AND_WHEN("c = w.refractedColour(comps, 5)") {
+      const auto comps = rtc::prepareComputation(*xs.begin(), r, xs);
+      const auto c = w.refractedColour(comps, 5);
+
+      THEN("c = colour(0, 0, 0)") { CHECK(c == rtc::BLACK); }
+    }
+  }
+}
+
+SCENARIO("The refracted colour under the total internal reflection.") {
+  GIVEN("w = defaultWorld()")
+  AND_GIVEN("shape = first object in w")
+  AND_GIVEN("shape.material.transparency = 1.0")
+  AND_GIVEN("shape.material.refractiveIndex = 1.5")
+  AND_GIVEN("r = ray(point(0,0,sqrt(2)/2), vector(0,1,0))")
+  AND_GIVEN("xs = intersections(-sqrt(2)/2:shape, sqrt(2)/2:shape)") {
+    const auto w = rtc::defaultWorld();
+    auto shape = w.objects.begin()->get();
+    auto material = shape->getMaterial();
+    material.transparency = 1.0f;
+    material.refractiveIndex = 1.5f;
+    shape->setMaterial(material);
+    const rtc::Ray r{rtc::point(0, 0, std::sqrt(2.0f) / 2),
+                     rtc::vector(0, 1, 0)};
+    const rtc::Intersection i1{-std::sqrt(2.0f) / 2, shape};
+    const rtc::Intersection i2{std::sqrt(2.0f) / 2, shape};
+    const rtc::SortedIntersections xs{i1, i2};
+    WHEN("comps = prepareComputations(xs[1], r, xs)")
+    AND_WHEN("c = w.refractedColour(comps,5)") {
+      const auto comps =
+          rtc::prepareComputation(*std::next(xs.begin(), 1), r, xs);
+      const auto c = w.refractedColour(comps, 5);
+      THEN("c = colour(0,0,0)") { REQUIRE(c == rtc::BLACK); }
+    }
+  }
+}
+
+SCENARIO("The refracted colour with a refacted ray") {
+  GIVEN("w = defaultWorld()")
+  AND_GIVEN("a = the first object in w")
+  AND_GIVEN("a.material.ambeint = 1.0")
+  AND_GIVEN("a.material.pattern = testPattern()")
+  AND_GIVEN("b = the second object in w")
+  AND_GIVEN("b.material.transparency = 1.0")
+  AND_GIVEN("b.material.refractiveIndex = 1.5")
+  AND_GIVEN("r = ray(point(0,0,0.1), vector(0,1,0))")
+  AND_GIVEN("xs = intersections(-0.9899:a, -0.4899:b, 0.4899:b, 0.9899:a)") {
+    const auto w = rtc::defaultWorld();
+
+    auto a = w.objects.begin()->get();
+    auto material = a->getMaterial();
+    material.ambient = 1.0f;
+    material.pattern = std::make_unique<rtc::TestPattern>();
+    a->setMaterial(material);
+
+    auto b = std::next(w.objects.begin(), 1)->get();
+    auto materialB = b->getMaterial();
+    materialB.transparency = 1.0f;
+    materialB.refractiveIndex = 1.5f;
+    b->setMaterial(materialB);
+
+    const rtc::Ray r{rtc::point(0, 0, 0.1f), rtc::vector(0, 1, 0)};
+    const rtc::SortedIntersections xs{
+        rtc::Intersection{-0.9899f, a}, rtc::Intersection{-0.4899f, b},
+        rtc::Intersection{0.4899f, b}, rtc::Intersection{0.9899f, a}};
+
+    WHEN("comps = prepareComputations(xs[2], r, xs)")
+    AND_WHEN("c = w.refractedColour(comps, 5)") {
+      const auto comps =
+          rtc::prepareComputation(*std::next(xs.begin(), 2), r, xs);
+      const auto c = w.refractedColour(comps, 5);
+
+      THEN("c = colour(0,0.99888,0.04725)") {
+        CHECK(c == rtc::Colour{0, 0.99888f, 0.04725f});
+      }
+    }
+  }
+}
+
+SCENARIO("shadeHit() with a transparent material.") {
+  GIVEN("w = defaultWorld()")
+  AND_GIVEN("floor = plane()")
+  AND_GIVEN("floor.material.transparency = 0.5")
+  AND_GIVEN("floor.material.refractiveIndex = 1.5")
+  AND_GIVEN("floor.transform = translation(0,-1,0)")
+  AND_GIVEN("floor is added to w")
+  AND_GIVEN("ball = sphere()")
+  AND_GIVEN("ball.material.colour = colour(1,0,0)")
+  AND_GIVEN("ball.material.ambient = 0.5")
+  AND_GIVEN("ball.transform = translation(0,-3.5,-0.5)")
+  AND_GIVEN("ball is added to w")
+  AND_GIVEN("r = ray(point(0, 0, -3), vector(0, -sqrt(2)/2, sqrt(2)/2))")
+  AND_GIVEN("xs = intersections(sqrt(2):floor)") {
+    auto w = rtc::defaultWorld();
+
+    auto floor = rtc::plane();
+    auto floorMaterial = floor.getMaterial();
+    floorMaterial.transparency = 0.5f;
+    floorMaterial.refractiveIndex = 1.5f;
+    floor.setMaterial(floorMaterial);
+    floor.setTransformationMatrix(rtc::translationMatrix(0, -1, 0));
+    w.objects.emplace_back(std::make_unique<rtc::Plane>(floor));
+
+    auto ball = rtc::sphere();
+    auto ballMaterial = ball.getMaterial();
+    ballMaterial.colour = rtc::Colour{1, 0, 0};
+    ballMaterial.ambient = 0.5f;
+    ball.setMaterial(ballMaterial);
+    ball.setTransformationMatrix(rtc::translationMatrix(0, -3.5f, -0.5f));
+    w.objects.emplace_back(std::make_unique<rtc::Sphere>(ball));
+
+    const auto r =
+        rtc::Ray{rtc::point(0, 0, -3),
+                 rtc::vector(0, -std::sqrtf(2) / 2, std::sqrtf(2) / 2)};
+    const auto xs =
+        rtc::SortedIntersections{rtc::Intersection{std::sqrtf(2), &floor}};
+    WHEN("comps = prepareComputations(xs[0], r, xs)")
+    AND_WHEN("c = w.shadeHit(comps, 5)") {
+      const auto comps = rtc::prepareComputation(*xs.begin(), r, xs);
+      const auto c = w.shadeHit(comps, 5);
+      THEN("c = colour(0.93642, 0.68642, 0.68642))") {
+        CHECK(c == rtc::Colour{0.93642f, 0.68642f, 0.68642f});
+      }
+    }
+  }
+}
+
+SCENARIO("shadeHit() with a transparent and reflective material.") {
+  GIVEN("w = defaultWorld()")
+  AND_GIVEN("r = ray(point(0,0,-3), vector(0,-sqrt(2)/2,sqrt(2)/2))")
+  AND_GIVEN("floor = plane()")
+  AND_GIVEN("floor.transformation = translation(0,-1,0)")
+  AND_GIVEN("floor.material.reflective = 0.5")
+  AND_GIVEN("floor.material.transparency = 0.5")
+  AND_GIVEN("floor.material.refractiveIndex = 1.5")
+  AND_GIVEN("floor is added to w")
+  AND_GIVEN("ball = sphere()")
+  AND_GIVEN("ball.transformation = translation(0,-3.5,-0.5)")
+  AND_GIVEN("ball.material.colour = colour(1,0,0)")
+  AND_GIVEN("ball.material.ambient = 0.5")
+  AND_GIVEN("ball is added to w")
+  AND_GIVEN("xs = intersections(sqrt(2):floor)") {
+    auto w = rtc::defaultWorld();
+    const rtc::Ray r{rtc::point(0, 0, -3),
+                     rtc::vector(0, -std::sqrt(2.0f) / 2, std::sqrt(2.0f) / 2)};
+
+    auto floor = rtc::plane();
+    floor.setTransformationMatrix(rtc::translationMatrix(0, -1, 0));
+    auto floorMaterial = floor.getMaterial();
+    floorMaterial.reflective = 0.5f;
+    floorMaterial.transparency = 0.5f;
+    floorMaterial.refractiveIndex = 1.5f;
+    floor.setMaterial(floorMaterial);
+    w.objects.emplace_back(std::make_unique<rtc::Plane>(floor));
+
+    auto ball = rtc::sphere();
+    ball.setTransformationMatrix(rtc::translationMatrix(0, -3.5f, -0.5f));
+    auto ballMaterial = ball.getMaterial();
+    ballMaterial.colour = rtc::Colour{1, 0, 0};
+    ballMaterial.ambient = 0.5f;
+    ball.setMaterial(ballMaterial);
+    w.objects.emplace_back(std::make_unique<rtc::Sphere>(ball));
+
+    const auto xs =
+        rtc::SortedIntersections{rtc::Intersection{std::sqrtf(2), &floor}};
+
+    WHEN("comps = prepareComputations(xs[0], r, xs)")
+    AND_WHEN("c = w.shadeHit(comps, 5)") {
+      const auto comps = rtc::prepareComputation(*xs.begin(), r, xs);
+      const auto c = w.shadeHit(comps, 5);
+
+      THEN("c = colour(0.93391, 0.69643, 0.69243)))") {
+        CHECK(c == rtc::Colour{0.93391f, 0.69643f, 0.69243f});
+      }
     }
   }
 }

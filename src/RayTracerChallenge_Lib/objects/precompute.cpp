@@ -1,7 +1,6 @@
 #include <RayTracerChallenge/objects/intersection.hpp>
 #include <RayTracerChallenge/objects/precompute.hpp>
 #include <algorithm>
-#include <optional>
 #include <vector>
 
 rtc::Precompute rtc::prepareComputation(const Intersection &intersection,
@@ -19,6 +18,7 @@ rtc::Precompute rtc::prepareComputation(const Intersection &intersection,
     comp.inside = false;
   }
   comp.overPoint = comp.point + comp.normalVec * EPSILON;
+  comp.underPoint = comp.point - comp.normalVec * EPSILON;
   comp.reflectVec = ray.direction.reflect(comp.normalVec);
   return comp;
 }
@@ -52,4 +52,23 @@ rtc::prepareComputation(const Intersection &intersection, const Ray &ray,
   }
 
   return comp;
+}
+
+float rtc::Precompute::schlick() const noexcept {
+  // find the cosine of the angle between the eye and normal vector
+  float cos = eyeVec.dot(normalVec);
+  // check for total internal refraction
+  if (n1 > n2) {
+    const float n = n1 / n2;
+    const float sin2t = (n * n) * (1.0f - cos * cos);
+    if (sin2t > 1.0f) {
+      return 1.0f;
+    }
+
+    // compute cosine of theta_t using trig. identity
+    cos = std::sqrt(1.0f - sin2t);
+  }
+
+  const float r0 = std::pow((n1 - n2) / (n1 + n2), 2);
+  return r0 + (1.0f - r0) * std::pow(1.0f - cos, 5);
 }

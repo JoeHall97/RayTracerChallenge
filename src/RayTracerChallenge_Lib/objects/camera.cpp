@@ -22,7 +22,7 @@ rtc::Canvas rtc::Camera::render(const World &world) const noexcept {
     boost::asio::post(pool, [&, y] {
       for (std::size_t x = 0; x < hSize; x++) {
         const auto ray = getRayForPixel(x, y);
-        const auto colour = world.colourAtWithReflections(ray, 5);
+        const auto colour = world.colourAt(ray, 5);
         image.writePixel(x, y, colour);
       }
     });

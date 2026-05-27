@@ -2,9 +2,9 @@
 #include <cstdlib>
 
 namespace rtc {
-constexpr float EPSILON = 0.001f;
+constexpr float EPSILON = 0.0001f;
 
 inline bool areFloatsEqual(const float a, const float b) {
-  return std::abs(a - b) <= EPSILON;
+  return std::abs(a - b) < EPSILON;
 }
 } // namespace rtc
