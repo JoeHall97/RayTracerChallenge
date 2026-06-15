@@ -10,6 +10,7 @@
 #include <RayTracerChallenge/objects/world.hpp>
 #include <catch2/catch_test_macros.hpp>
 #include <cmath>
+#include <iterator>
 #include <memory>
 
 SCENARIO("Intersect a world with a ray.") {
@@ -27,12 +28,9 @@ SCENARIO("Intersect a world with a ray.") {
         REQUIRE(xs.size() == 4);
         auto it = xs.begin();
         CHECK(it->t == 4);
-        ++it;
-        CHECK(it->t == 4.5);
-        ++it;
-        CHECK(it->t == 5.5);
-        ++it;
-        CHECK(it->t == 6);
+        CHECK(std::next(it, 1)->t == 4.5);
+        CHECK(std::next(it, 2)->t == 5.5);
+        CHECK(std::next(it, 3)->t == 6);
       }
     }
   }

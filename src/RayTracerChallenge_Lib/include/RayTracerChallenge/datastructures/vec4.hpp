@@ -3,6 +3,7 @@
 #include <RayTracerChallenge/helpers/helpers.hpp>
 #include <cmath>
 #include <ostream>
+#include <string>
 
 namespace rtc {
 struct Vec4 {
@@ -60,6 +61,11 @@ struct Vec4 {
   [[nodiscard]] Vec4 reflect(const Vec4 &normal) const noexcept {
     return *this - normal * 2.0f * dot(normal);
   }
+
+  [[nodiscard]] inline std::string str() const noexcept {
+    return '{' + std::to_string(x) + ", " + std::to_string(y) + ", " +
+           std::to_string(z) + ", " + std::to_string(w) + '}';
+  }
 };
 
 inline Vec4 point(const float x, const float y, const float z) noexcept {
@@ -70,4 +76,7 @@ inline Vec4 vector(const float x, const float y, const float z) noexcept {
 }
 } // namespace rtc
 
-std::ostream &operator<<(std::ostream &os, const rtc::Vec4 &t);
+inline std::ostream &operator<<(std::ostream &os, const rtc::Vec4 &t) {
+  os << t.str();
+  return os;
+}

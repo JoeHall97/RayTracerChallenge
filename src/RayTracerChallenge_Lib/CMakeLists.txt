@@ -13,6 +13,7 @@ set(OBJECTS_HEADERS
         "include/RayTracerChallenge/objects/test_shape.hpp"
         "include/RayTracerChallenge/objects/plane.hpp"
         "include/RayTracerChallenge/objects/patterns.hpp"
+        "include/RayTracerChallenge/objects/cube.hpp"
 )
 
 set(OBJECTS_SOURCES
@@ -29,6 +30,7 @@ set(OBJECTS_SOURCES
         "objects/test_shape.cpp"
         "objects/plane.cpp"
         "objects/patterns.cpp"
+        "objects/cube.cpp"
 )
 
 set(DATASTRUCTURES_HEADERS

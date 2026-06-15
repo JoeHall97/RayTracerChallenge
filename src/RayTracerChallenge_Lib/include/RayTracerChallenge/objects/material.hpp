@@ -14,6 +14,16 @@ struct Material {
   float ambient, diffuse, specular, shininess, reflective, transparency,
       refractiveIndex;
 
+  explicit Material(const Colour &colour)
+      : colour(colour), pattern(nullptr), ambient(0.1f), diffuse(0.9f),
+        specular(0.9f), shininess(200.0f), reflective(0.0f), transparency(0.0f),
+        refractiveIndex(1.0f) {}
+
+  explicit Material(std::unique_ptr<Pattern> p)
+      : colour(WHITE), pattern(std::move(p)), ambient(0.1f), diffuse(0.9f),
+        specular(0.9f), shininess(200.0f), reflective(0.0f), transparency(0.0f),
+        refractiveIndex(1.0f) {}
+
   Material(const Colour colour, const float ambient, const float diffuse,
            const float specular, const float shininess, const float reflective,
            const float transparency, const float refractiveIndex)
